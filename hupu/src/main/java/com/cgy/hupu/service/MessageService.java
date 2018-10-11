@@ -7,10 +7,8 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.cgy.hupu.Logger;
-import com.cgy.hupu.MyApplication;
 import com.cgy.hupu.components.UserStorage;
-import com.cgy.hupu.injector.module.ServiceModule;
-import com.cgy.hupu.net.ForumApi;
+import com.cgy.hupu.net.forum.ForumApi;
 
 import javax.inject.Inject;
 
