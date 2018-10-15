@@ -1,4 +1,4 @@
-package com.gzsll.hupu.widget;
+package com.cgy.hupu.widget;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -14,14 +14,13 @@ import android.util.TypedValue;
 import android.widget.RelativeLayout;
 
 /**
- * Created by sll on 2015/5/15.
+ * Created by cgy on 2018/10/15  13:56
  */
 public class ProgressBarCircularIndeterminate extends RelativeLayout {
-
     final static String MATERIALDESIGNXML = "http://schemas.android.com/apk/res-auto";
     final static String ANDROIDXML = "http://schemas.android.com/apk/res/android";
 
-    final int disabledBackgroundColor = Color.parseColor("#E2E2E2");
+    final int disableBackgroundColor = Color.parseColor("#E2E2E2");
     int beforeBackground;
     float radius1 = 0;
     float radius2 = 0;
@@ -34,7 +33,11 @@ public class ProgressBarCircularIndeterminate extends RelativeLayout {
     }
 
     public ProgressBarCircularIndeterminate(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
+    }
+
+    public ProgressBarCircularIndeterminate(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         setAttributes(attrs);
     }
 
@@ -44,8 +47,9 @@ public class ProgressBarCircularIndeterminate extends RelativeLayout {
         if (enabled) {
             setBackgroundColor(beforeBackground);
         } else {
-            setBackgroundColor(disabledBackgroundColor);
+            setBackgroundColor(disableBackgroundColor);
         }
+
         invalidate();
     }
 
@@ -72,9 +76,8 @@ public class ProgressBarCircularIndeterminate extends RelativeLayout {
         invalidate();
     }
 
-    // Set atributtes of XML to View
-    protected void setAttributes(AttributeSet attrs) {
-
+    // Set attributeset of XML to View
+    private void setAttributes(AttributeSet attrs) {
         setMinimumHeight(dpToPx(32, getResources()));
         setMinimumWidth(dpToPx(32, getResources()));
 
@@ -84,10 +87,10 @@ public class ProgressBarCircularIndeterminate extends RelativeLayout {
         if (backgroundColor != -1) {
             setBackgroundColor(getResources().getColor(backgroundColor));
         } else {
-            // Color by hexadecimal
+            //Color by hexadecimal
             int background = attrs.getAttributeIntValue(ANDROIDXML, "background", -1);
             if (background != -1) {
-                setBackgroundColor(background);
+                setBackgroundColor(backgroundColor);
             } else {
                 setBackgroundColor(Color.parseColor("#1E88E5"));
             }
@@ -100,14 +103,14 @@ public class ProgressBarCircularIndeterminate extends RelativeLayout {
         int r = (this.backgroundColor >> 16) & 0xFF;
         int g = (this.backgroundColor >> 8) & 0xFF;
         int b = (this.backgroundColor >> 0) & 0xFF;
-        //		r = (r+90 > 245) ? 245 : r+90;
-        //		g = (g+90 > 245) ? 245 : g+90;
-        //		b = (b+90 > 245) ? 245 : b+90;
+
         return Color.argb(128, r, g, b);
     }
 
     /**
      * Draw first animation of view
+     *
+     * @param canvas
      */
     private void drawFirstAnimation(Canvas canvas) {
         if (radius1 < getWidth() / 2) {
@@ -117,9 +120,8 @@ public class ProgressBarCircularIndeterminate extends RelativeLayout {
             radius1 = (radius1 >= getWidth() / 2) ? (float) getWidth() / 2 : radius1 + 1;
             canvas.drawCircle(getWidth() / 2, getHeight() / 2, radius1, paint);
         } else {
-            Bitmap bitmap =
-                    Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas temp = new Canvas(bitmap);
+            Bitmap bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas temp = new Canvas();
             Paint paint = new Paint();
             paint.setAntiAlias(true);
             paint.setColor(makePressColor());
@@ -131,8 +133,8 @@ public class ProgressBarCircularIndeterminate extends RelativeLayout {
             if (cont >= 50) {
                 radius2 = (radius2 >= getWidth() / 2) ? (float) getWidth() / 2 : radius2 + 1;
             } else {
-                radius2 = (radius2 >= getWidth() / 2 - dpToPx(4, getResources())) ? (float) getWidth() / 2
-                        - dpToPx(4, getResources()) : radius2 + 1;
+                radius2 = (radius2 >= getWidth() / 2 - dpToPx(4, getResources())) ?
+                        (float) getWidth() / 2 - dpToPx(4, getResources()) : radius2 + 1;
             }
             temp.drawCircle(getWidth() / 2, getHeight() / 2, radius2, transparentPaint);
             canvas.drawBitmap(bitmap, 0, 0, new Paint());
@@ -144,32 +146,28 @@ public class ProgressBarCircularIndeterminate extends RelativeLayout {
     int arcD = 1;
     int arcO = 0;
     float rotateAngle = 0;
-    int limite = 0;
+    int limit = 0;
 
-    /**
-     * Draw second animation of view
-     */
     private void drawSecondAnimation(Canvas canvas) {
-        if (arcO == limite) arcD += 6;
-        if (arcD >= 290 || arcO > limite) {
-            arcO += 6;
+        if (arcO == limit) arcD += 6;
+        if (arcD >= 290 || arcO > limit) {
+            arcO +=6;
             arcD -= 6;
         }
-        if (arcO > limite + 290) {
-            limite = arcO;
-            arcO = limite;
+
+        if (arcO > limit + 290) {
+            limit = arcO;
+            arcO = limit;
             arcD = 1;
         }
         rotateAngle += 4;
         canvas.rotate(rotateAngle, getWidth() / 2, getHeight() / 2);
 
-        Bitmap bitmap =
-                Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas temp = new Canvas(bitmap);
-        Paint paint = new Paint();
+        Paint  paint = new Paint();
         paint.setAntiAlias(true);
         paint.setColor(backgroundColor);
-        //		temp.drawARGB(0, 0, 0, 255);
         temp.drawArc(new RectF(0, 0, getWidth(), getHeight()), arcO, arcD, true, paint);
         Paint transparentPaint = new Paint();
         transparentPaint.setAntiAlias(true);
@@ -177,20 +175,22 @@ public class ProgressBarCircularIndeterminate extends RelativeLayout {
         transparentPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
         temp.drawCircle(getWidth() / 2, getHeight() / 2, (getWidth() / 2) - dpToPx(4, getResources()),
                 transparentPaint);
-
         canvas.drawBitmap(bitmap, 0, 0, new Paint());
     }
 
-    // Set color of background
     public void setBackgroundColor(int color) {
         super.setBackgroundColor(getResources().getColor(android.R.color.transparent));
         if (isEnabled()) beforeBackground = backgroundColor;
         this.backgroundColor = color;
     }
 
-    public static int dpToPx(float dp, Resources resources) {
-        float px =
-                TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
+
+    private int dpToPx(float dp, Resources resources) {
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
+
         return (int) px;
+
     }
+
+
 }
