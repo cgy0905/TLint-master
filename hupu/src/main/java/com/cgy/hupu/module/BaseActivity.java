@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -22,6 +23,9 @@ import com.cgy.hupu.utils.StatusBarUtil;
 import com.cgy.hupu.utils.ThemeUtil;
 import com.umeng.analytics.MobclickAgent;
 
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * Created by cgy on 2018/10/11  9:15
  */
@@ -29,14 +33,27 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected ActivityCompat activityCompat;
 
+    private Unbinder unbinder;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         getApplicationComponent().inject(this);
         initTheme();
         super.onCreate(savedInstanceState);
-        setContentView(initContentView());
+        if (initContentView() != 0) {
+            setContentView(initContentView());
+        }
+        setTranslucentStatus(isApplyStatusBarTranslucency());
+        initInjector();
+        initUiAndListener();
+        AppManager.getAppManager().addActivity(this);
     }
 
+    @Override
+    public void setContentView(int layoutResID) {
+        super.setContentView(layoutResID);
+        unbinder = ButterKnife.bind(this);
+    }
 
     protected ApplicationComponent getApplicationComponent() {
         return ((MyApplication) getApplication()).getApplicationComponent();
@@ -145,5 +162,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         AppManager.getAppManager().finishActivity(this);
+        unbinder.unbind();
     }
 }

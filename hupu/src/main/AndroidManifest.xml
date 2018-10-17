@@ -10,12 +10,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppThemeLight">
         <activity android:name=".MainActivity">
+
+        </activity>
+        <activity android:name=".module.splash.SplashActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeLaunch">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".module.main.MainActivity" />
+        <activity android:name=".module.messagelist.MessageActivity" />
     </application>
 
 </manifest>

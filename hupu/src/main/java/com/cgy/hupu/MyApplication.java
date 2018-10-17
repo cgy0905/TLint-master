@@ -50,12 +50,7 @@ public class MyApplication extends Application {
 
         initComponent();
         initUser();
-        FileDownloader.init(this, new FileDownloadHelper.OkHttpClientCustomMaker() {
-            @Override
-            public OkHttpClient customMake() {
-                return okHttpClient;
-            }
-        });
+        FileDownloader.init(this, () -> okHttpClient);
 
         initFrescoConfig();
         ToastUtil.register(this);
