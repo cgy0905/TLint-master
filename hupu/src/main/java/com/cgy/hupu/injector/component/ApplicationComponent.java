@@ -6,6 +6,7 @@ import android.content.Context;
 import com.cgy.hupu.MyApplication;
 import com.cgy.hupu.components.UserStorage;
 import com.cgy.hupu.components.okhttp.OkHttpHelper;
+import com.cgy.hupu.injector.module.ApiModule;
 import com.cgy.hupu.injector.module.ApplicationModule;
 import com.cgy.hupu.module.BaseActivity;
 import com.cgy.hupu.net.forum.ForumApi;
@@ -21,7 +22,7 @@ import dagger.Component;
  */
 
 @Singleton
-@Component(modules = {ApplicationModule.class})
+@Component(modules = {ApplicationModule.class, ApiModule.class})
 public interface ApplicationComponent {
 
     Context getContext();
