@@ -45,9 +45,8 @@ public class SplashPresenter implements SplashContract.Presenter {
     @Override
     public void initHuPuSign() {
         subscription = Observable.create((Observable.OnSubscribe<UpdateInfo>) subscriber -> {
-            String result = null;
             try {
-                result = okHttpHelper.getStringFromServer(Constants.UPDATE_URL);
+                String result = okHttpHelper.getStringFromServer(Constants.UPDATE_URL);
                 subscriber.onNext(JSON.parseObject(result, UpdateInfo.class));
             } catch (Exception e) {
                 e.printStackTrace();
