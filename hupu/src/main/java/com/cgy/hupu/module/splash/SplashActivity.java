@@ -28,6 +28,7 @@ public class SplashActivity extends BaseActivity implements SplashContract.View{
 
     @Inject
     SplashPresenter splashPresenter;
+
     @Override
     public int initContentView() {
         return R.layout.activity_splash;
