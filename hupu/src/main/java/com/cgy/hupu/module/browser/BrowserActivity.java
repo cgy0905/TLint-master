@@ -1,11 +1,8 @@
-package com.cgy.hupu.module.about;
+package com.cgy.hupu.module.browser;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
-import com.cgy.hupu.R;
 import com.cgy.hupu.module.BaseActivity;
 
 public class BrowserActivity extends BaseActivity {
@@ -15,6 +12,10 @@ public class BrowserActivity extends BaseActivity {
         intent.putExtra("url", url);
         intent.putExtra("external", external);
         context.startActivity(intent);
+    }
+
+    public static void startActivity(Context context, String url) {
+        startActivity(context, url, true);
     }
 
     @Override

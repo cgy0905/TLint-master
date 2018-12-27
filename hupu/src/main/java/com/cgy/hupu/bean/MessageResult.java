@@ -1,7 +1,11 @@
 package com.cgy.hupu.bean;
 
+import java.util.List;
+
 /**
- * Created by cgy on 2018/12/17 0017 下午 4:00.
+ * Created by cgy on 2018/12/17 .
  */
-class MessageResult {
+public class MessageResult {
+    public int all_count;
+    public List<Message> list;
 }

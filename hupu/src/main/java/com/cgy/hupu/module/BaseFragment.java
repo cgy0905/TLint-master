@@ -80,7 +80,7 @@ public abstract class BaseFragment extends ProgressFragment {
     @Override
     public View onCreateProgressView(LayoutInflater inflater) {
         View loadingView = inflater.inflate(R.layout.loading_view_layout, null);
-        tvEmpty = loadingView.findViewById(R.id.tv_loading);
+        tvLoading = loadingView.findViewById(R.id.tv_loading);
         ProgressBarCircularIndeterminate progressBar = loadingView.findViewById(R.id.progress_view);
         progressBar.setBackgroundColor(ResourceUtil.getThemeColor(getActivity()));
         return loadingView;

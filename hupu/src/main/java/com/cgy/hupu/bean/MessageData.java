@@ -1,7 +1,9 @@
 package com.cgy.hupu.bean;
 
 /**
- * Created by cgy on 2018/12/17 0017 下午 3:59.
+ * Created by cgy on 2018/12/17.
  */
-class MessageData {
+public class MessageData {
+    public int status;
+    public MessageResult result;
 }

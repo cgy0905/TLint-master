@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by gzsll on 2014/9/23 0023.
+ * Created by cgy on 2018/12/17.
  */
 public class RequestHelper {
 

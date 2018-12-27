@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import com.cgy.hupu.AppManager;
 import com.cgy.hupu.MyApplication;
 import com.cgy.hupu.R;
+import com.cgy.hupu.injector.component.ActivityComponent;
 import com.cgy.hupu.injector.component.ApplicationComponent;
 import com.cgy.hupu.injector.module.ActivityModule;
 import com.cgy.hupu.utils.ResourceUtil;
@@ -31,7 +32,7 @@ import butterknife.Unbinder;
  */
 public abstract class BaseActivity extends AppCompatActivity {
 
-    protected ActivityCompat activityCompat;
+    protected ActivityComponent mActivityComponent;
 
     private Unbinder unbinder;
 

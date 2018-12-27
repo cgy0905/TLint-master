@@ -1,23 +1,17 @@
 package com.cgy.hupu.module.splash;
 
-import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.TextureView;
 import android.widget.FrameLayout;
 
-import com.cgy.hupu.MainActivity;
+import com.cgy.hupu.module.main.MainActivity;
 import com.cgy.hupu.R;
-import com.cgy.hupu.injector.component.DaggerApplicationComponent;
 import com.cgy.hupu.module.BaseActivity;
 import com.cgy.hupu.module.messagelist.MessageActivity;
-
 import javax.inject.Inject;
-
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
- * Created by cgy on 2018/10/17  9:40
+ * Created by cgy on 2018/10/17 .
  */
 public class SplashActivity extends BaseActivity implements SplashContract.View{
 
