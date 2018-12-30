@@ -10,6 +10,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.gzsll.hupu.AppManager;
+import com.gzsll.hupu.MyApplication;
 import com.gzsll.hupu.R;
 import com.gzsll.hupu.injector.component.ActivityComponent;
 import com.gzsll.hupu.injector.component.ApplicationComponent;
