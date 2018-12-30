@@ -32,7 +32,7 @@ import com.cgy.hupu.module.login.LoginActivity;
 import com.cgy.hupu.module.messagelist.MessageActivity;
 import com.cgy.hupu.module.post.PostActivity;
 import com.cgy.hupu.module.setting.SettingActivity;
-import com.cgy.hupu.module.thread.RecommendThreadListFragment;
+import com.cgy.hupu.module.thread.recommend.RecommendThreadListFragment;
 import com.cgy.hupu.module.userprofile.UserProfileActivity;
 import com.cgy.hupu.utils.ResourceUtil;
 import com.cgy.hupu.utils.SettingPrefUtil;
@@ -90,11 +90,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("帖子推荐");
-        ivIcon = navigationView.getHeaderView(0).findViewById(R.id.iv_icon);
-        tvName = navigationView.getHeaderView(0).findViewById(R.id.tv_name);
+        ivIcon = (SimpleDraweeView) navigationView.getHeaderView(0).findViewById(R.id.iv_icon);
+        tvName = (TextView)navigationView.getHeaderView(0).findViewById(R.id.tv_name);
         navigationView.getHeaderView(0).findViewById(R.id.iv_cover).setOnClickListener(this);
         navigationView.getHeaderView(0).findViewById(R.id.ll_account).setOnClickListener(this);
-        ivTheme = navigationView.getHeaderView(0).findViewById(R.id.iv_theme);
+        ivTheme = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.iv_theme);
         ivTheme.setOnClickListener(this);
         ivTheme.setImageResource(SettingPrefUtil.getNightModel(this) ? R.drawable.ic_wb_sunny_white_24dp
                 : R.drawable.ic_brightness_3_white_24dp);
@@ -132,7 +132,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         LayoutInflater inflater = LayoutInflater.from(this);
         View view = inflater.inflate(R.layout.notification_count_layout, null);
         view.setBackgroundResource(backgroundImageId);
-        TextView tvCount = view.findViewById(R.id.tv_count);
+        TextView tvCount = (TextView) view.findViewById(R.id.tv_count);
         if (count == 0) {
             tvCount.setVisibility(View.GONE);
         } else {

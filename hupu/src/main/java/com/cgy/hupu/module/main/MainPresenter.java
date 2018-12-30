@@ -15,7 +15,7 @@ import com.cgy.hupu.db.UserDao;
 import com.cgy.hupu.injector.PerActivity;
 import com.cgy.hupu.module.browser.BrowserFragment;
 import com.cgy.hupu.module.forum.ForumListFragment;
-import com.cgy.hupu.module.thread.RecommendThreadListFragment;
+import com.cgy.hupu.module.thread.recommend.RecommendThreadListFragment;
 import com.cgy.hupu.module.thread.collect.CollectThreadListFragment;
 import com.cgy.hupu.otto.AccountChangeEvent;
 import com.cgy.hupu.otto.ChangeThemeEvent;

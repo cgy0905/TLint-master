@@ -1,4 +1,4 @@
-package com.cgy.hupu.module.thread;
+package com.cgy.hupu.module.thread.recommend;
 
 import android.os.Bundle;
 import android.view.View;

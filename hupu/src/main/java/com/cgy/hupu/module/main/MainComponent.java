@@ -4,7 +4,7 @@ import com.cgy.hupu.injector.PerActivity;
 import com.cgy.hupu.injector.component.ApplicationComponent;
 import com.cgy.hupu.injector.module.ActivityModule;
 import com.cgy.hupu.module.forum.ForumListFragment;
-import com.cgy.hupu.module.thread.RecommendThreadListFragment;
+import com.cgy.hupu.module.thread.recommend.RecommendThreadListFragment;
 import com.cgy.hupu.module.thread.collect.CollectThreadListFragment;
 
 import dagger.Component;
