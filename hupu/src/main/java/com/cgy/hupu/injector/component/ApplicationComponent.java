@@ -6,8 +6,10 @@ import android.content.Context;
 import com.cgy.hupu.MyApplication;
 import com.cgy.hupu.components.UserStorage;
 import com.cgy.hupu.components.okhttp.OkHttpHelper;
+import com.cgy.hupu.db.UserDao;
 import com.cgy.hupu.injector.module.ApiModule;
 import com.cgy.hupu.injector.module.ApplicationModule;
+import com.cgy.hupu.injector.module.DBModule;
 import com.cgy.hupu.module.BaseActivity;
 import com.cgy.hupu.net.forum.ForumApi;
 import com.cgy.hupu.net.game.GameApi;
@@ -22,7 +24,7 @@ import dagger.Component;
  */
 
 @Singleton
-@Component(modules = {ApplicationModule.class, ApiModule.class})
+@Component(modules = {ApplicationModule.class, ApiModule.class, DBModule.class})
 public interface ApplicationComponent {
 
     Context getContext();
@@ -33,7 +35,7 @@ public interface ApplicationComponent {
 
     GameApi getGameApi();
 
-
+    UserDao getUserDao();
 
     OkHttpHelper getOkHttpHelper();
 

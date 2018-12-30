@@ -17,7 +17,6 @@ import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.gzsll.hupu.BuildConfig;
 import com.gzsll.hupu.Logger;
-import com.gzsll.hupu.MyApplication;
 import com.gzsll.hupu.api.forum.ForumApi;
 import com.gzsll.hupu.bean.ThreadLightReplyData;
 import com.gzsll.hupu.bean.ThreadListData;

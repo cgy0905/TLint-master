@@ -12,7 +12,6 @@ import android.support.v4.app.NotificationCompat;
 
 import com.gzsll.hupu.AppManager;
 import com.gzsll.hupu.Logger;
-import com.gzsll.hupu.MyApplication;
 import com.gzsll.hupu.R;
 import com.gzsll.hupu.api.forum.ForumApi;
 import com.gzsll.hupu.bean.Message;

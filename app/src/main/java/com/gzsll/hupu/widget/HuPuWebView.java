@@ -15,7 +15,6 @@ import android.webkit.WebViewClient;
 
 import com.gzsll.hupu.AppManager;
 import com.gzsll.hupu.Constants;
-import com.gzsll.hupu.MyApplication;
 import com.gzsll.hupu.components.retrofit.RequestHelper;
 import com.gzsll.hupu.components.storage.UserStorage;
 import com.gzsll.hupu.ui.browser.BrowserActivity;

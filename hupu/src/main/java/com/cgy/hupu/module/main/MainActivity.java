@@ -17,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -105,7 +104,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         drawerLayout.setDrawerListener(drawerToggle);
         StatusBarUtil.setColorForDrawerLayout(this, drawerLayout, ResourceUtil.getThemeColor(this), 0);
         setupDrawerContent();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, new RecommendThreadListFragment())
+        getFragmentManager().beginTransaction().replace(R.id.fl_content, new RecommendThreadListFragment())
                 .commit();
         mPresenter.attachView(this);
     }
@@ -176,6 +175,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         return false;
     }
 
+    @Override
+    public void onBackPressed() {
+        mPresenter.exist();
+    }
 
     @Override
     public void onClick(View v) {
