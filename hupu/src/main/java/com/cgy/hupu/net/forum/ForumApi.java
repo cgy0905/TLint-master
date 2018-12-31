@@ -3,6 +3,7 @@ package com.cgy.hupu.net.forum;
 import android.content.Context;
 
 import com.cgy.hupu.bean.MessageData;
+import com.cgy.hupu.bean.ThreadListData;
 import com.cgy.hupu.components.UserStorage;
 import com.cgy.hupu.components.retrofit.FastJsonConverterFactory;
 import com.cgy.hupu.components.retrofit.RequestHelper;
@@ -54,6 +55,40 @@ public class ForumApi {
         params.put("uid", mUserStorage.getUid());
         String sign = mRequestHelper.getRequestSign(params);
         return mForumService.getMessageList(sign, params).subscribeOn(Schedulers.io());
+    }
+
+    /**
+     * 获取推荐帖子类型
+     */
+    public Observable<ThreadListData> getRecommendThreadList(String lastTid, String lastTamp) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("lastTid", lastTid);
+        params.put("isHome", "1");
+        params.put("stamp", lastTamp);
+        String sign = mRequestHelper.getRequestSign(params);
+        return mForumService.getRecommendThreadList(sign, params).subscribeOn(Schedulers.io());
+
+    }
+
+    /**
+     * 获取论坛帖子列表
+     * @param fid       论坛id，通过getForums接口获取
+     * @param lastTid   最后一篇帖子的id
+     * @param lastTamp  时间戳
+     * @param type      加载类型  1 按发帖时间排序  2 按回帖时间排序
+     * @return
+     */
+    public Observable<ThreadListData> getThreadsList(String fid, String lastTid, String lastTamp, String type) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("fid", fid);
+        params.put("lastTid", lastTid);
+        params.put("isHome", "1");
+        params.put("stamp", lastTamp);
+        params.put("password", "0");
+        params.put("special", "0");
+        params.put("type", type);
+        String sign = mRequestHelper.getRequestSign(params);
+        return mForumService.getThreadsList(sign, params).subscribeOn(Schedulers.io());
     }
 
     /**

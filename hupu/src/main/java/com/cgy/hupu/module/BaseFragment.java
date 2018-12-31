@@ -115,7 +115,7 @@ public abstract class BaseFragment extends ProgressFragment {
     }
 
     //Override this to reload
-    private void onReloadClicked() {
+    public void onReloadClicked() {
 
     }
 

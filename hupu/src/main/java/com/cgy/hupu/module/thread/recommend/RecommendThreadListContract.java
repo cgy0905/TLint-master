@@ -1,5 +1,6 @@
 package com.cgy.hupu.module.thread.recommend;
 
+import com.cgy.hupu.db.Thread;
 import com.cgy.hupu.module.BasePresenter;
 import com.cgy.hupu.module.BaseView;
 

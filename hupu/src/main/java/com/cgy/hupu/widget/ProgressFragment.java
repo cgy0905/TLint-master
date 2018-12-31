@@ -114,7 +114,7 @@ public class ProgressFragment extends Fragment {
 
     private ShowState lastState = new NonState();
 
-    private void showContent(boolean animate) {
+    public void showContent(boolean animate) {
         if (lastState == contentState) {
             return;
         }

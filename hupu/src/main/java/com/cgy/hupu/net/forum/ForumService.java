@@ -1,6 +1,7 @@
 package com.cgy.hupu.net.forum;
 
 import com.cgy.hupu.bean.MessageData;
+import com.cgy.hupu.bean.ThreadListData;
 
 import java.util.Map;
 
@@ -16,4 +17,10 @@ public interface ForumService {
 
     @GET("user/getUserMessageList")
     Observable<MessageData> getMessageList(@Query("sign") String sign, @QueryMap Map<String, String> params);
+
+    @GET("recommend/getThreadsList")
+    Observable<ThreadListData> getRecommendThreadList(@Query("sign") String sign, @QueryMap Map<String, String> params);
+
+    @GET("forums/getForumsInfoList")
+    Observable<ThreadListData> getThreadsList(@Query("sign") String sign, @QueryMap Map<String, String> params);
 }

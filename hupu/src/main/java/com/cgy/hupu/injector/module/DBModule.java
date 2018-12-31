@@ -4,6 +4,9 @@ import android.content.Context;
 
 import com.cgy.hupu.db.DaoMaster;
 import com.cgy.hupu.db.DaoSession;
+import com.cgy.hupu.db.ForumDao;
+import com.cgy.hupu.db.ReadThreadDao;
+import com.cgy.hupu.db.ThreadDao;
 import com.cgy.hupu.db.UserDao;
 
 import javax.inject.Singleton;
@@ -41,4 +44,21 @@ public class DBModule {
         return session.getUserDao();
     }
 
+    @Provides
+    @Singleton
+    ForumDao getForumDao(DaoSession session) {
+        return session.getForumDao();
+    }
+
+    @Provides
+    @Singleton
+    ThreadDao getThreadDao(DaoSession session) {
+        return session.getThreadDao();
+    }
+
+    @Provides
+    @Singleton
+    ReadThreadDao getReadThreadDao(DaoSession session) {
+        return session.getReadThreadDao();
+    }
 }
