@@ -114,8 +114,8 @@ public class RecommendThreadListFragment extends BaseFragment implements Recomme
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDestroy() {
+        super.onDestroy();
         unbinder.unbind();
         mRecommendPresenter.detachView();
     }
@@ -127,7 +127,7 @@ public class RecommendThreadListFragment extends BaseFragment implements Recomme
 
     @Override
     public void onLoadMore() {
-
+        mRecommendPresenter.onLoadMore();
     }
 
 }

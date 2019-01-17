@@ -34,12 +34,7 @@ public class ThreadRepository {
     }
 
     public Observable<List<Thread>> getThreadListObservable(final int type, PublishSubject<List<Thread>> mSubject) {
-        Observable<List<Thread>> firstObservable = Observable.fromCallable(new Func0<List<Thread>>() {
-            @Override
-            public List<Thread> call() {
-                return mThreadDao.queryBuilder().where(ThreadDao.Properties.Type.eq(type)).list();
-            }
-        });
+        Observable<List<Thread>> firstObservable = Observable.fromCallable((Func0<List<Thread>>) () -> mThreadDao.queryBuilder().where(ThreadDao.Properties.Type.eq(type)).list());
         return firstObservable.concatWith(mSubject)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

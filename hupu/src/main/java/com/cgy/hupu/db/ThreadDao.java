@@ -1,13 +1,10 @@
 package com.cgy.hupu.db;
 
-import java.util.List;
-import java.util.ArrayList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
 import org.greenrobot.greendao.AbstractDao;
 import org.greenrobot.greendao.Property;
-import org.greenrobot.greendao.internal.SqlUtils;
 import org.greenrobot.greendao.internal.DaoConfig;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.database.DatabaseStatement;
@@ -36,11 +33,10 @@ public class ThreadDao extends AbstractDao<Thread, Long> {
         public final static Property ForumName = new Property(8, String.class, "forumName", false, "FORUM_NAME");
         public final static Property LightReply = new Property(9, Integer.class, "lightReply", false, "LIGHT_REPLY");
         public final static Property Type = new Property(10, Integer.class, "type", false, "TYPE");
-        public final static Property ForumId = new Property(11, Long.class, "forumId", false, "FORUM_ID");
+        public final static Property Forum = new Property(11, String.class, "forum", false, "FORUM");
     }
 
-    private DaoSession daoSession;
-
+    private final ForumConvert forumConverter = new ForumConvert();
 
     public ThreadDao(DaoConfig config) {
         super(config);
@@ -48,7 +44,6 @@ public class ThreadDao extends AbstractDao<Thread, Long> {
     
     public ThreadDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
-        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -66,7 +61,7 @@ public class ThreadDao extends AbstractDao<Thread, Long> {
                 "\"FORUM_NAME\" TEXT," + // 8: forumName
                 "\"LIGHT_REPLY\" INTEGER," + // 9: lightReply
                 "\"TYPE\" INTEGER," + // 10: type
-                "\"FORUM_ID\" INTEGER);"); // 11: forumId
+                "\"FORUM\" TEXT);"); // 11: forum
     }
 
     /** Drops the underlying database table. */
@@ -130,9 +125,9 @@ public class ThreadDao extends AbstractDao<Thread, Long> {
             stmt.bindLong(11, type);
         }
  
-        Long forumId = entity.getForumId();
-        if (forumId != null) {
-            stmt.bindLong(12, forumId);
+        Forum forum = entity.getForum();
+        if (forum != null) {
+            stmt.bindString(12, forumConverter.convertToDatabaseValue(forum));
         }
     }
 
@@ -191,16 +186,10 @@ public class ThreadDao extends AbstractDao<Thread, Long> {
             stmt.bindLong(11, type);
         }
  
-        Long forumId = entity.getForumId();
-        if (forumId != null) {
-            stmt.bindLong(12, forumId);
+        Forum forum = entity.getForum();
+        if (forum != null) {
+            stmt.bindString(12, forumConverter.convertToDatabaseValue(forum));
         }
-    }
-
-    @Override
-    protected final void attachEntity(Thread entity) {
-        super.attachEntity(entity);
-        entity.__setDaoSession(daoSession);
     }
 
     @Override
@@ -222,7 +211,7 @@ public class ThreadDao extends AbstractDao<Thread, Long> {
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // forumName
             cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // lightReply
             cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // type
-            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11) // forumId
+            cursor.isNull(offset + 11) ? null : forumConverter.convertToEntityProperty(cursor.getString(offset + 11)) // forum
         );
         return entity;
     }
@@ -240,7 +229,7 @@ public class ThreadDao extends AbstractDao<Thread, Long> {
         entity.setForumName(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setLightReply(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
         entity.setType(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
-        entity.setForumId(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
+        entity.setForum(cursor.isNull(offset + 11) ? null : forumConverter.convertToEntityProperty(cursor.getString(offset + 11)));
      }
     
     @Override
@@ -268,95 +257,4 @@ public class ThreadDao extends AbstractDao<Thread, Long> {
         return true;
     }
     
-    private String selectDeep;
-
-    protected String getSelectDeep() {
-        if (selectDeep == null) {
-            StringBuilder builder = new StringBuilder("SELECT ");
-            SqlUtils.appendColumns(builder, "T", getAllColumns());
-            builder.append(',');
-            SqlUtils.appendColumns(builder, "T0", daoSession.getForumDao().getAllColumns());
-            builder.append(" FROM THREAD T");
-            builder.append(" LEFT JOIN FORUM T0 ON T.\"FORUM_ID\"=T0.\"_id\"");
-            builder.append(' ');
-            selectDeep = builder.toString();
-        }
-        return selectDeep;
-    }
-    
-    protected Thread loadCurrentDeep(Cursor cursor, boolean lock) {
-        Thread entity = loadCurrent(cursor, 0, lock);
-        int offset = getAllColumns().length;
-
-        Forum forum = loadCurrentOther(daoSession.getForumDao(), cursor, offset);
-        entity.setForum(forum);
-
-        return entity;    
-    }
-
-    public Thread loadDeep(Long key) {
-        assertSinglePk();
-        if (key == null) {
-            return null;
-        }
-
-        StringBuilder builder = new StringBuilder(getSelectDeep());
-        builder.append("WHERE ");
-        SqlUtils.appendColumnsEqValue(builder, "T", getPkColumns());
-        String sql = builder.toString();
-        
-        String[] keyArray = new String[] { key.toString() };
-        Cursor cursor = db.rawQuery(sql, keyArray);
-        
-        try {
-            boolean available = cursor.moveToFirst();
-            if (!available) {
-                return null;
-            } else if (!cursor.isLast()) {
-                throw new IllegalStateException("Expected unique result, but count was " + cursor.getCount());
-            }
-            return loadCurrentDeep(cursor, true);
-        } finally {
-            cursor.close();
-        }
-    }
-    
-    /** Reads all available rows from the given cursor and returns a list of new ImageTO objects. */
-    public List<Thread> loadAllDeepFromCursor(Cursor cursor) {
-        int count = cursor.getCount();
-        List<Thread> list = new ArrayList<Thread>(count);
-        
-        if (cursor.moveToFirst()) {
-            if (identityScope != null) {
-                identityScope.lock();
-                identityScope.reserveRoom(count);
-            }
-            try {
-                do {
-                    list.add(loadCurrentDeep(cursor, false));
-                } while (cursor.moveToNext());
-            } finally {
-                if (identityScope != null) {
-                    identityScope.unlock();
-                }
-            }
-        }
-        return list;
-    }
-    
-    protected List<Thread> loadDeepAllAndCloseCursor(Cursor cursor) {
-        try {
-            return loadAllDeepFromCursor(cursor);
-        } finally {
-            cursor.close();
-        }
-    }
-    
-
-    /** A raw-style query where you can pass any WHERE clause and arguments. */
-    public List<Thread> queryDeep(String where, String... selectionArg) {
-        Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);
-        return loadDeepAllAndCloseCursor(cursor);
-    }
- 
 }

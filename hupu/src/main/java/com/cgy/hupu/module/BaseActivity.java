@@ -5,10 +5,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -34,7 +32,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected ActivityComponent mActivityComponent;
 
-    private Unbinder unbinder;
+    private Unbinder mUnbinder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,6 +43,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             setContentView(initContentView());
         }
         setTranslucentStatus(isApplyStatusBarTranslucency());
+        setStatusBarColor(isApplyStatusBarColor());
         initInjector();
         initUiAndListener();
         AppManager.getAppManager().addActivity(this);
@@ -53,7 +52,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-        unbinder = ButterKnife.bind(this);
+        ButterKnife.bind(this);
     }
 
     protected ApplicationComponent getApplicationComponent() {
@@ -87,6 +86,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (theme != R.style.AppThemeLaunch) {
             theme = ThemeUtil.themeArr[SettingPrefUtil.getThemeIndex(this)][SettingPrefUtil.getNightModel(this) ? 1 : 0];
         }
+        setTheme(theme);
     }
 
     /**
@@ -112,7 +112,9 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     protected abstract boolean isApplyStatusBarTranslucency();
 
-
+    /**
+     * set status bar translucency
+     */
     protected void setTranslucentStatus(boolean on) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -130,7 +132,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected abstract boolean isApplyStatusBarColor();
 
-
+    /**
+     * use SystemBarTintManager
+     */
     public void setStatusBarColor(boolean on) {
         if (on) {
             StatusBarUtil.setColor(this, ResourceUtil.getThemeColor(this), 0);
@@ -163,6 +167,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         AppManager.getAppManager().finishActivity(this);
-        unbinder.unbind();
+        if (mUnbinder != null) {
+            mUnbinder.unbind();
+        }
     }
 }

@@ -58,7 +58,7 @@ public class ForumApi {
     }
 
     /**
-     * 获取推荐帖子类型
+     * 获取推荐帖子列表
      */
     public Observable<ThreadListData> getRecommendThreadList(String lastTid, String lastTamp) {
         Map<String, String> params = mRequestHelper.getHttpRequestMap();

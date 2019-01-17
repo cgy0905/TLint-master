@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -17,6 +18,7 @@ import com.cgy.hupu.module.BaseSwipeBackActivity;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class LoginActivity extends BaseSwipeBackActivity implements LoginContract.View{
 
@@ -57,6 +59,7 @@ public class LoginActivity extends BaseSwipeBackActivity implements LoginContrac
 
     @Override
     public void initUiAndListener() {
+        ButterKnife.bind(this);
         mPresenter.attachView(this);
         initToolBar(mToolbar);
         setTitle("登录");
@@ -113,6 +116,21 @@ public class LoginActivity extends BaseSwipeBackActivity implements LoginContrac
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_login, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.login) {
+            doLogin();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void doLogin() {
+        String userName = mEtUserName.getText().toString().trim();
+        String password = mEtPassword.getText().toString().trim();
+        mPresenter.login(userName, password);
     }
 
     class MTextWatcher implements TextWatcher {

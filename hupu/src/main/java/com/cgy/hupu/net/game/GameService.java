@@ -1,6 +1,8 @@
 package com.cgy.hupu.net.game;
 
+import com.cgy.hupu.bean.LoginData;
 import com.cgy.hupu.bean.PmData;
+import com.cgy.hupu.bean.UserData;
 
 import java.util.Map;
 
@@ -16,6 +18,17 @@ import rx.Observable;
 public interface GameService {
 
     @FormUrlEncoded
+    @POST("user/loginUsernameEmail")
+    Observable<LoginData> login(
+            @FieldMap Map<String, String> params, @Query("client") String client);
+
+    @FormUrlEncoded
+    @POST("user/page")
+    Observable<UserData> getUserInfo(@FieldMap  Map<String, String> params, @Query("client") String client);
+
+    @FormUrlEncoded
     @POST("pm/list")
     Observable<PmData> queryPmList(@FieldMap Map<String, String> params, @Query("client") String client);
+
+
 }

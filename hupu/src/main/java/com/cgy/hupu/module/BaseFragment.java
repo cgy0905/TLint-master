@@ -59,12 +59,7 @@ public abstract class BaseFragment extends ProgressFragment {
     public View onCreateContentErrorView(LayoutInflater inflater) {
         View errorView = inflater.inflate(R.layout.error_view_layout, null);
         tvError = (TextView) errorView.findViewById(R.id.tv_error);
-        errorView.findViewById(R.id.btn_reload).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onReloadClicked();
-            }
-        });
+        errorView.findViewById(R.id.btn_reload).setOnClickListener(v -> onReloadClicked());
         return errorView;
     }
 

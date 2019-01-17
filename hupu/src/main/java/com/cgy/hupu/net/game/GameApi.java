@@ -2,10 +2,13 @@ package com.cgy.hupu.net.game;
 
 import android.text.TextUtils;
 
+import com.cgy.hupu.bean.LoginData;
 import com.cgy.hupu.bean.PmData;
+import com.cgy.hupu.bean.UserData;
 import com.cgy.hupu.components.retrofit.FastJsonConverterFactory;
 import com.cgy.hupu.components.retrofit.RequestHelper;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.OkHttpClient;
@@ -36,6 +39,22 @@ public class GameApi {
         mGameService = retrofit.create(GameService.class);
     }
 
+    /**
+     * 登录
+     * @param username  用户名
+     * @param password  密码
+     * @return
+     */
+    public Observable<LoginData> login(String username, String password) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("client", mRequestHelper.getDeviceId());
+        params.put("username", username);
+        params.put("password", password);
+        String sign = mRequestHelper.getRequestSign(params);
+        params.put("sign", sign);
+        return mGameService.login(params, mRequestHelper.getDeviceId()).subscribeOn(Schedulers.io());
+    }
+
     public Observable<PmData> queryPmList(String lastTime) {
         Map<String, String> params = mRequestHelper.getHttpRequestMap();
         if (!TextUtils.isEmpty(lastTime)) {
@@ -45,5 +64,17 @@ public class GameApi {
         params.put("sign", sign);
         return mGameService.queryPmList(params, mRequestHelper.getDeviceId())
                 .subscribeOn(Schedulers.io());
+    }
+
+    /**
+     * 获取用户相关信息
+     * @param uid   用户id
+     */
+    public Observable<UserData> getUserInfo(String uid) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("puid", uid);
+        String sign = mRequestHelper.getRequestSign(params);
+        params.put("sign", sign);
+        return mGameService.getUserInfo(params, mRequestHelper.getDeviceId());
     }
 }
