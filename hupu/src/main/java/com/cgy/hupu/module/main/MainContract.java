@@ -1,7 +1,6 @@
 package com.cgy.hupu.module.main;
 
 import android.app.Fragment;
-import android.net.VpnService;
 import android.view.MenuItem;
 
 import com.cgy.hupu.db.User;

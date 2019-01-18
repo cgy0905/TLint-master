@@ -45,7 +45,7 @@ public class ThreadRepository {
         return mForumApi.getRecommendThreadList(lastTid, lastTamp)
                 .doOnNext(threadListData -> {
                     if (threadListData != null && threadListData.result != null) {
-                        cacheThreadList(0, TextUtils.isEmpty(lastTid), threadListData.result.data);
+                        ThreadRepository.this.cacheThreadList(0, TextUtils.isEmpty(lastTid), threadListData.result.data);
                     }
                     if (mSubject != null) {
                         mSubject.onNext(mThreadDao.queryBuilder()
