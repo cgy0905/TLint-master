@@ -35,7 +35,11 @@
             android:theme="@style/AppThemeLight.NoTranslucent" />
         <activity android:name=".module.messagelist.MessageActivity" />
         <activity android:name=".module.userprofile.UserProfileActivity" />
-        <activity android:name=".module.login.LoginActivity" />
+        <activity
+            android:name=".module.login.LoginActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeLight" />
         <activity android:name=".module.account.AccountActivity" />
         <activity android:name=".module.setting.SettingActivity" />
         <activity android:name=".module.post.PostActivity" />
