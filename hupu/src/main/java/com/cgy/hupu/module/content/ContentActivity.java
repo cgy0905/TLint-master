@@ -3,6 +3,7 @@ package com.cgy.hupu.module.content;
 import android.content.Context;
 import android.content.Intent;
 
+import com.cgy.hupu.R;
 import com.cgy.hupu.module.BaseSwipeBackActivity;
 
 /**
@@ -22,7 +23,7 @@ public class ContentActivity extends BaseSwipeBackActivity {
 
     @Override
     public int initContentView() {
-        return 0;
+        return R.layout.activity_content;
     }
 
     @Override
