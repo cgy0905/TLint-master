@@ -91,6 +91,8 @@ public class ForumApi {
         return mForumService.getThreadsList(sign, params).subscribeOn(Schedulers.io());
     }
 
+    public Observable<BaseData>
+
     /**
      * 获取所有论坛列表
      */
