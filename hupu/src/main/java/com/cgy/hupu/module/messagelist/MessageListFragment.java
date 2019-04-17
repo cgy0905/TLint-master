@@ -3,10 +3,7 @@ package com.cgy.hupu.module.messagelist;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-
 import com.cgy.hupu.R;
 import com.cgy.hupu.bean.Message;
 import com.cgy.hupu.module.BaseFragment;
@@ -26,7 +23,7 @@ import butterknife.Unbinder;
  * Created by cgy on 2019/4/17.
  */
 public class MessageListFragment extends BaseFragment implements MessageListContract.View ,
-        PullToRefreshView.OnRefreshListener, LoadMoreRecyclerView.LoadMoreListener {
+        PullToRefreshView.OnRefreshListener, LoadMoreRecyclerView.LoadMoreListener, MessageListAdapter.OnItemClickListener {
 
     @BindView(R.id.recyclerView)
     LoadMoreRecyclerView recyclerView;
@@ -65,6 +62,7 @@ public class MessageListFragment extends BaseFragment implements MessageListCont
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLoadMoreListener(this);
+        mAdapter.setOnItemClickListener(this);
     }
 
     @Override
@@ -139,5 +137,10 @@ public class MessageListFragment extends BaseFragment implements MessageListCont
     @Override
     public void onReloadClicked() {
         mPresenter.onLoadMore();
+    }
+
+    @Override
+    public void onMessageClick(Message message) {
+        mPresenter.onMessageClick(message);
     }
 }

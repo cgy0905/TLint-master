@@ -1,6 +1,5 @@
 package com.cgy.hupu.module.main;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -104,7 +104,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         drawerLayout.setDrawerListener(drawerToggle);
         StatusBarUtil.setColorForDrawerLayout(this, drawerLayout, ResourceUtil.getThemeColor(this), 0);
         setupDrawerContent();
-        getFragmentManager().beginTransaction().replace(R.id.fl_content, new RecommendThreadListFragment())
+        getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, new RecommendThreadListFragment())
                 .commit();
         mPresenter.attachView(this);
     }
@@ -233,7 +233,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void showFragment(Fragment fragment) {
-        getFragmentManager().beginTransaction().replace(R.id.fl_content, fragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, fragment).commit();
     }
 
     @Override

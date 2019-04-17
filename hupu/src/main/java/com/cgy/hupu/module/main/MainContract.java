@@ -1,6 +1,6 @@
 package com.cgy.hupu.module.main;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
 import com.cgy.hupu.db.User;

@@ -1,24 +1,25 @@
 package com.cgy.hupu.module.messagelist;
 
 import android.support.annotation.NonNull;
-
 import com.cgy.hupu.bean.Message;
-import com.cgy.hupu.bean.MessageData;
+import com.cgy.hupu.injector.PerActivity;
 import com.cgy.hupu.net.forum.ForumApi;
+import com.cgy.hupu.otto.MessageReadEvent;
 import com.cgy.hupu.utils.ToastUtil;
 import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 /**
  * Created by cgy on 2019/4/17.
  */
+@PerActivity
 public class MessageListPresenter implements MessageListContract.Presenter{
 
     private ForumApi mForumApi;
@@ -31,7 +32,7 @@ public class MessageListPresenter implements MessageListContract.Presenter{
 
     private List<Message> messages = new ArrayList<>();
 
-
+    @Inject
     public MessageListPresenter(ForumApi forumApi, Bus bus) {
         this.mForumApi = forumApi;
         this.mBus = bus;
@@ -75,7 +76,7 @@ public class MessageListPresenter implements MessageListContract.Presenter{
 
     private List<Message> addMessages(List<Message> threadList) {
         for (Message thread: threadList) {
-            if (!messages.contains(thread)) {
+            if (!contains(thread)) {
                 messages.add(thread);
             }
         }
@@ -128,16 +129,26 @@ public class MessageListPresenter implements MessageListContract.Presenter{
     @Override
     public void onMessageClick(Message message) {
         mMessageListView.showContentUi(message.tid, message.pid, Integer.valueOf(message.page));
-        mForumApi.delMessage(message.id)
+        mForumApi.delMessage(message.id).subscribe(baseData -> {
+            if (baseData != null && baseData.status == 200) {
+                mMessageListView.removeMessage(message);
+                mBus.post(new MessageReadEvent());
+            }
+        }, throwable -> {
+
+        });
     }
 
     @Override
     public void attachView(@NonNull MessageListContract.View view) {
-
+        mMessageListView = view;
     }
 
     @Override
     public void detachView() {
-
+        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
+            mSubscription.unsubscribe();
+        }
+        mMessageListView = null;
     }
 }

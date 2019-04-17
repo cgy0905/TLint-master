@@ -2,6 +2,7 @@ package com.cgy.hupu.net.forum;
 
 import android.content.Context;
 
+import com.cgy.hupu.bean.BaseData;
 import com.cgy.hupu.bean.MessageData;
 import com.cgy.hupu.bean.ThreadListData;
 import com.cgy.hupu.components.UserStorage;
@@ -91,7 +92,12 @@ public class ForumApi {
         return mForumService.getThreadsList(sign, params).subscribeOn(Schedulers.io());
     }
 
-    public Observable<BaseData>
+    public Observable<BaseData> delMessage(String id) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("id", id);
+        String sign = mRequestHelper.getRequestSign(params);
+        return mForumService.delMessage(sign, params).subscribeOn(Schedulers.io());
+    }
 
     /**
      * 获取所有论坛列表
