@@ -18,5 +18,5 @@ public interface ContentComponent extends ActivityComponent {
 
     void inject(ContentActivity activity);
 
-    void inject();
+    void inject(ContentFragment fragment);
 }

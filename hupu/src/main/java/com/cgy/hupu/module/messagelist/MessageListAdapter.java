@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.cgy.hupu.R;
 import com.cgy.hupu.bean.Message;
-import com.cgy.hupu.module.account.AccountAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -12,4 +12,11 @@
         <item name="android:layout_margin">2.5dp</item>
     </style>
 
+    <style name="popwindow_anim_style">
+        <!--指定显示的动画xml -->
+        <item name="android:windowEnterAnimation">@anim/picker_anim_enter_bottom</item>
+        <!--指定消失的动画xml -->
+        <item name="android:windowExitAnimation">@anim/picler_anim_exit_bottom</item>
+    </style>
+
 </resources>

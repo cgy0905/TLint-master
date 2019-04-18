@@ -32,7 +32,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected ActivityComponent mActivityComponent;
 
-    private Unbinder mUnbinder;
+    private Unbinder unbinder;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     protected ApplicationComponent getApplicationComponent() {
@@ -167,8 +167,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         AppManager.getAppManager().finishActivity(this);
-        if (mUnbinder != null) {
-            mUnbinder.unbind();
+        if (unbinder != null) {
+            unbinder.unbind();
         }
     }
 }

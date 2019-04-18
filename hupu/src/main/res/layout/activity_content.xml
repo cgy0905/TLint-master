@@ -82,7 +82,7 @@
             android:layout_width="60dp"
             android:layout_height="52dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_toLeftOf="@+id/tv_pageNum"
             android:gravity="center"
             android:text="上一页"
