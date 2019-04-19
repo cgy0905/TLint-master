@@ -15,6 +15,8 @@ import com.cgy.hupu.R;
  */
 public class PagePicker extends PopupWindow implements View.OnClickListener {
 
+    private MaterialNumberPicker picker;
+
     public PagePicker(Context context) {
         this(context, null);
     }
@@ -30,10 +32,68 @@ public class PagePicker extends PopupWindow implements View.OnClickListener {
         LayoutInflater mLayoutInflater = LayoutInflater.from(context);
         View rootView = mLayoutInflater.inflate(R.layout.page_picker_view, null);
         rootView.findViewById(R.id.btn_cancel).setOnClickListener(this);
+        rootView.findViewById(R.id.btn_first).setOnClickListener(this);
+        rootView.findViewById(R.id.btn_jump).setOnClickListener(this);
+        rootView.findViewById(R.id.btn_last).setOnClickListener(this);
+        picker = (MaterialNumberPicker) rootView.findViewById(R.id.picker);
+        setContentView(rootView);
+    }
+
+    void jump() {
+        int page = picker.getValue();
+        if (mListener != null) {
+            mListener.onJump(page);
+        }
+        dismiss();
+    }
+    void end() {
+        int page = picker.getMaxValue();
+        if (mListener != null) {
+            mListener.onJump(page);
+        }
+        dismiss();
+    }
+    void first() {
+        int page = picker.getMinValue();
+        if (mListener != null) {
+            mListener.onJump(page);
+        }
+        dismiss();
+    }
+
+    public void setMin(int min) {
+        picker.setMinValue(min);
+    }
+    public void setMax(int max) {
+        picker.setMaxValue(max);
+    }
+    public void setValue(int value) {
+        picker.setValue(value);
     }
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_cancel:
+                dismiss();
+                break;
+            case R.id.btn_first:
+                first();
+                break;
+            case R.id.btn_last:
+                end();
+                break;
+            case R.id.btn_jump:
+                jump();
+                break;
+        }
+    }
+    private OnJumpListener mListener;
 
+    public void setOnJumpListener(OnJumpListener listener) {
+        mListener = listener;
+    }
+    public interface OnJumpListener {
+        void onJump(int page);
     }
 }

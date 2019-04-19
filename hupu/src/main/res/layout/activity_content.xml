@@ -33,7 +33,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginBottom="50dp">
 
-        <android.support.design.widget.FloatingActionButton
+        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/floating_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
             app:fab_label="回复"
             app:fab_size="mini" />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/floating_report"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
             app:fab_label="举报"
             app:fab_size="mini" />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/floating_collect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
             app:fab_label="收藏"
             app:fab_size="mini" />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.github.clans.fab.FloatingActionButton
             android:id="@+id/floating_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
