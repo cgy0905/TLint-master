@@ -1,1 +1,1 @@
-include ':app', ':hupu', 'GreenDaoGenerator'
+include ':app', ':hupu', ':dynamic_proxy', ':retrofit_proxy', 'GreenDaoGenerator'
