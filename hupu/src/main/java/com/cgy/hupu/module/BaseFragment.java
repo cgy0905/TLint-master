@@ -58,21 +58,16 @@ public abstract class BaseFragment extends ProgressFragment {
     @Override
     public View onCreateContentErrorView(LayoutInflater inflater) {
         View errorView = inflater.inflate(R.layout.error_view_layout, null);
-        tvError = errorView.findViewById(R.id.tv_error);
-        errorView.findViewById(R.id.btn_reload).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onReloadClicked();
-            }
-        });
+        tvError = (TextView) errorView.findViewById(R.id.tv_error);
+        errorView.findViewById(R.id.btn_reload).setOnClickListener(v -> onReloadClicked());
         return errorView;
     }
 
     @Override
     public View onCreateContentEmptyView(LayoutInflater inflater) {
         View emptyView = inflater.inflate(R.layout.empty_view_layout, null);
-        tvEmpty = emptyView.findViewById(R.id.tv_empty);
-        btnReload = emptyView.findViewById(R.id.btn_reload);
+        tvEmpty = (TextView) emptyView.findViewById(R.id.tv_empty);
+        btnReload = (Button) emptyView.findViewById(R.id.btn_reload);
         emptyView.findViewById(R.id.btn_reload).setOnClickListener(v -> onReloadClicked());
         return emptyView;
     }
@@ -80,8 +75,8 @@ public abstract class BaseFragment extends ProgressFragment {
     @Override
     public View onCreateProgressView(LayoutInflater inflater) {
         View loadingView = inflater.inflate(R.layout.loading_view_layout, null);
-        tvEmpty = loadingView.findViewById(R.id.tv_loading);
-        ProgressBarCircularIndeterminate progressBar = loadingView.findViewById(R.id.progress_view);
+        tvLoading = (TextView) loadingView.findViewById(R.id.tv_loading);
+        ProgressBarCircularIndeterminate progressBar = (ProgressBarCircularIndeterminate) loadingView.findViewById(R.id.progress_view);
         progressBar.setBackgroundColor(ResourceUtil.getThemeColor(getActivity()));
         return loadingView;
     }
@@ -115,7 +110,7 @@ public abstract class BaseFragment extends ProgressFragment {
     }
 
     //Override this to reload
-    private void onReloadClicked() {
+    public void onReloadClicked() {
 
     }
 

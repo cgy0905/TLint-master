@@ -4,9 +4,11 @@ import android.app.Application;
 
 import com.cgy.hupu.components.UserStorage;
 import com.cgy.hupu.db.User;
+import com.cgy.hupu.db.UserDao;
 import com.cgy.hupu.injector.component.ApplicationComponent;
 import com.cgy.hupu.injector.component.DaggerApplicationComponent;
 import com.cgy.hupu.injector.module.ApplicationModule;
+import com.cgy.hupu.utils.SettingPrefUtil;
 import com.cgy.hupu.utils.ToastUtil;
 import com.facebook.cache.disk.DiskCacheConfig;
 import com.facebook.common.internal.Supplier;
@@ -17,7 +19,6 @@ import com.facebook.imagepipeline.cache.MemoryCacheParams;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig;
 import com.liulishuo.filedownloader.FileDownloader;
-import com.liulishuo.filedownloader.util.FileDownloadHelper;
 import com.squareup.leakcanary.LeakCanary;
 
 import java.util.List;
@@ -36,13 +37,15 @@ public class MyApplication extends Application {
     public static final int MAX_MEMORY_CACHE_SIZE = MAX_HEAP_SIZE / 8;
 
     @Inject
-    UserStorage userStorage;
+    UserStorage mUserStorage;
+    @Inject
+    UserDao mUserDao;
 
     @Inject
-    OkHttpClient okHttpClient;
+    OkHttpClient mOkHttpClient;
 
 
-    private ApplicationComponent applicationComponent;
+    private ApplicationComponent mApplicationComponent;
 
     @Override
     public void onCreate() {
@@ -50,7 +53,7 @@ public class MyApplication extends Application {
 
         initComponent();
         initUser();
-        FileDownloader.init(this, () -> okHttpClient);
+        FileDownloader.init(this, () -> mOkHttpClient);
 
         initFrescoConfig();
         ToastUtil.register(this);
@@ -58,14 +61,22 @@ public class MyApplication extends Application {
     }
 
     private void initComponent() {
-        applicationComponent = DaggerApplicationComponent.builder().applicationModule(new ApplicationModule(this)).build();
-        applicationComponent.inject(this);
+        mApplicationComponent = DaggerApplicationComponent.builder().applicationModule(new ApplicationModule(this)).build();
+        mApplicationComponent.inject(this);
     }
 
     public ApplicationComponent getApplicationComponent() {
-        return applicationComponent;
+        return mApplicationComponent;
     }
 
+    private void initUser() {
+        List<User> users = mUserDao.queryBuilder()
+                .where(UserDao.Properties.Uid.eq(SettingPrefUtil.getLoginUid(this)))
+                .list();
+        if (!users.isEmpty()) {
+            mUserStorage.login(users.get(0));
+        }
+    }
 
     private void initFrescoConfig() {
         final MemoryCacheParams bitmapCacheParams =
@@ -74,7 +85,7 @@ public class MyApplication extends Application {
                         MAX_MEMORY_CACHE_SIZE,                  // Max total size of elements in eviction queue
                         Integer.MAX_VALUE,                      // Max length of eviction queue
                         Integer.MAX_VALUE);
-        ImagePipelineConfig config = OkHttpImagePipelineConfigFactory.newBuilder(this, okHttpClient)
+        ImagePipelineConfig config = OkHttpImagePipelineConfigFactory.newBuilder(this, mOkHttpClient)
                 .setProgressiveJpegConfig(new SimpleProgressiveJpegConfig())
                 .setBitmapMemoryCacheParamsSupplier(new Supplier<MemoryCacheParams>() {
                     @Override
@@ -89,9 +100,5 @@ public class MyApplication extends Application {
 
         Fresco.initialize(this, config);
     }
-
-    private void initUser() {
-    }
-
 
 }

@@ -1,12 +1,9 @@
 package com.cgy.hupu.module;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.cgy.hupu.R;
 import com.cgy.hupu.utils.SettingPrefUtil;
 import com.cgy.hupu.widget.swipeback.SwipeBackActivityBase;
 import com.cgy.hupu.widget.swipeback.SwipeBackActivityHelper;
@@ -17,32 +14,32 @@ import com.cgy.hupu.widget.swipeback.Utils;
  * Created by cgy on 2018/10/15  15:32
  */
 public abstract class BaseSwipeBackActivity extends BaseActivity implements SwipeBackActivityBase {
-    private SwipeBackActivityHelper helper;
+    private SwipeBackActivityHelper mHelper;
 
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        helper = new SwipeBackActivityHelper(this);
-        helper.onActivityCreate();
+        mHelper = new SwipeBackActivityHelper(this);
+        mHelper.onActivityCreate();
     }
 
     @Override
-    public void onPostCreate(@Nullable Bundle savedInstanceState) {
+    public void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        helper.onPostCreate();
+        mHelper.onPostCreate();
     }
 
     @Override
     public View findViewById(int id) {
         View v = super.findViewById(id);
-        if (v == null && helper != null) return helper.findViewById(id);
+        if (v == null && mHelper != null) return mHelper.findViewById(id);
         return v;
     }
 
     @Override
     public SwipeBackLayout getSwipeBackLayout() {
-        return helper.getSwipeBackLayout();
+        return mHelper.getSwipeBackLayout();
     }
 
     @Override
@@ -73,7 +70,7 @@ public abstract class BaseSwipeBackActivity extends BaseActivity implements Swip
     protected void onResume() {
         super.onResume();
         int mode = SettingPrefUtil.getSwipeBackEdgeMode(this);
-        SwipeBackLayout swipeBackLayout = helper.getSwipeBackLayout();
+        SwipeBackLayout swipeBackLayout = mHelper.getSwipeBackLayout();
         switch (mode) {
             case 0:
                 swipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT);

@@ -42,7 +42,7 @@ public class ProgressFragment extends Fragment {
         return null;
     }
 
-    private View contentView;
+    private View mContentView;
 
 
     @Nullable
@@ -61,9 +61,9 @@ public class ProgressFragment extends Fragment {
         replaceViewById(main, R.id.epf_empty, empty);
         replaceViewById(main, R.id.epf_progress, progress);
 
-        contentView = main;
-        animIn = onCreateAnimationIn();
-        animOut = onCreateAnimationOut();
+        mContentView = main;
+        mAnimIn = onCreateAnimationIn();
+        mAnimOut = onCreateAnimationOut();
         initStatus();
         isPrepare = true;
         return main;
@@ -89,65 +89,66 @@ public class ProgressFragment extends Fragment {
         newView.setVisibility(View.GONE);
     }
 
-    private ShowState emptyState, progressState, errorState, contentState, loginState, collectState;
+    private ShowState mEmptyState, mProgressState, mErrorState, mContentState, mLoginState,
+            mCollectState;
 
-    private Animation animIn, animOut;
+    private Animation mAnimIn, mAnimOut;
 
     private void initStatus() {
-        emptyState = new EmptyState();
-        progressState = new ProgressState();
-        errorState = new ErrorState();
-        contentState = new ContentState();
+        mEmptyState = new EmptyState();
+        mProgressState = new ProgressState();
+        mErrorState = new ErrorState();
+        mContentState = new ContentState();
 
-        initState(emptyState);
-        initState(progressState);
-        initState(errorState);
-        initState(contentState);
+        initState(mEmptyState);
+        initState(mProgressState);
+        initState(mErrorState);
+        initState(mContentState);
 
     }
 
     private void initState(ShowState state) {
-        state.setAnimIn(animIn);
-        state.setAnimOut(animOut);
-        state.setFragmentView(contentView);
+        state.setAnimIn(mAnimIn);
+        state.setAnimOut(mAnimOut);
+        state.setFragmentView(mContentView);
     }
 
-    private ShowState lastState = new NonState();
+    private ShowState mLastState = new NonState();
 
-    private void showContent(boolean animate) {
-        if (lastState == contentState) {
+    public void showContent(boolean animate) {
+        if (mLastState == mContentState) {
             return;
         }
 
-        contentState.show(animate);
-        lastState.dismiss(animate);
-        lastState = contentState;
+        mContentState.show(animate);
+        mLastState.dismiss(animate);
+        mLastState = mContentState;
     }
 
     public void showEmpty(boolean animate) {
-        if (lastState == emptyState) {
+        if (mLastState == mEmptyState) {
             return;
         }
-        emptyState.show(animate);
-        lastState.dismiss(animate);
-        lastState = emptyState;
+        mEmptyState.show(animate);
+        mLastState.dismiss(animate);
+        mLastState = mEmptyState;
     }
 
     public void showError(boolean animate) {
-        if (lastState == errorState) {
+        if (mLastState == mErrorState) {
             return;
         }
-        errorState.show(animate);
-        lastState.dismiss(animate);
-        lastState = errorState;
+        mErrorState.show(animate);
+        mLastState.dismiss(animate);
+        mLastState = mErrorState;
     }
 
     public void showProgress(boolean animate) {
-        if (lastState == errorState) {
+        if (mLastState == mProgressState) {
             return;
         }
-        progressState.show(animate);
-        lastState.dismiss(animate);
-        lastState = progressState;
+        mProgressState.show(animate);
+        mLastState.dismiss(animate);
+        mLastState = mProgressState;
     }
 }

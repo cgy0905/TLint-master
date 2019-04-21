@@ -7,11 +7,11 @@ import dagger.Module;
  */
 
 @Module
-class SplashModule {
+public class SplashModule {
 
-    private SplashActivity activity;
+    private SplashActivity mActivity;
 
     public SplashModule(SplashActivity activity) {
-        this.activity = activity;
+        this.mActivity = activity;
     }
 }

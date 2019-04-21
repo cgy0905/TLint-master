@@ -2,13 +2,20 @@ package com.cgy.hupu.net.forum;
 
 import android.content.Context;
 
+import com.cgy.hupu.bean.BaseData;
+import com.cgy.hupu.bean.MessageData;
+import com.cgy.hupu.bean.ThreadListData;
 import com.cgy.hupu.components.UserStorage;
 import com.cgy.hupu.components.retrofit.FastJsonConverterFactory;
 import com.cgy.hupu.components.retrofit.RequestHelper;
 
+import java.util.Map;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by sll on 2016/3/8.
@@ -17,41 +24,97 @@ public class ForumApi {
 
     static final String BASE_URL = "http://bbs.mobileapi.hupu.com/1/7.0.8/";
 
-    private ForumService forumService;
-    private RequestHelper requestHelper;
-    private UserStorage userStorage;
-    private Context context;
+    private ForumService mForumService;
+    private RequestHelper mRequestHelper;
+    private UserStorage mUserStorage;
+    private Context mContext;
 
     public ForumApi(RequestHelper requestHelper, UserStorage userStorage,
                     OkHttpClient mOkHttpClient, Context context) {
-        this.requestHelper = requestHelper;
-        this.userStorage = userStorage;
-        this.context = context;
+        this.mRequestHelper = requestHelper;
+        this.mUserStorage = userStorage;
+        this.mContext = context;
         Retrofit retrofit =
                 new Retrofit.Builder().addConverterFactory(FastJsonConverterFactory.create())
                         .client(mOkHttpClient)
                         .baseUrl(BASE_URL)
                         .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                         .build();
-        forumService = retrofit.create(ForumService.class);
+        mForumService = retrofit.create(ForumService.class);
+    }
+
+    /**
+     * 获取论坛消息列表
+     * @param lastTid 上一条消息id
+     * @param page 页数
+     * @return
+     */
+    public Observable<MessageData> getMessageList(String lastTid, int page) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("messageID", lastTid);
+        params.put("page", String.valueOf(page));
+        params.put("uid", mUserStorage.getUid());
+        String sign = mRequestHelper.getRequestSign(params);
+        return mForumService.getMessageList(sign, params).subscribeOn(Schedulers.io());
+    }
+
+    /**
+     * 获取推荐帖子列表
+     */
+    public Observable<ThreadListData> getRecommendThreadList(String lastTid, String lastTamp) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("lastTid", lastTid);
+        params.put("isHome", "1");
+        params.put("stamp", lastTamp);
+        String sign = mRequestHelper.getRequestSign(params);
+        return mForumService.getRecommendThreadList(sign, params).subscribeOn(Schedulers.io());
+
+    }
+
+    /**
+     * 获取论坛帖子列表
+     * @param fid       论坛id，通过getForums接口获取
+     * @param lastTid   最后一篇帖子的id
+     * @param lastTamp  时间戳
+     * @param type      加载类型  1 按发帖时间排序  2 按回帖时间排序
+     * @return
+     */
+    public Observable<ThreadListData> getThreadsList(String fid, String lastTid, String lastTamp, String type) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("fid", fid);
+        params.put("lastTid", lastTid);
+        params.put("isHome", "1");
+        params.put("stamp", lastTamp);
+        params.put("password", "0");
+        params.put("special", "0");
+        params.put("type", type);
+        String sign = mRequestHelper.getRequestSign(params);
+        return mForumService.getThreadsList(sign, params).subscribeOn(Schedulers.io());
+    }
+
+    public Observable<BaseData> delMessage(String id) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("id", id);
+        String sign = mRequestHelper.getRequestSign(params);
+        return mForumService.delMessage(sign, params).subscribeOn(Schedulers.io());
     }
 
     /**
      * 获取所有论坛列表
      */
 //    public Observable<ForumsData> getForums() {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
-//        String sign = requestHelper.getRequestSign(params);
-//        return forumService.getForums(sign, params).subscribeOn(Schedulers.io());
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+//        String sign = mRequestHelper.getRequestSign(params);
+//        return mForumService.getForums(sign, params).subscribeOn(Schedulers.io());
 //    }
 //
 //    /**
 //     * 获取用户收藏的论坛列表
 //     */
 //    public Observable<MyForumsData> getMyForums() {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
-//        String sign = requestHelper.getRequestSign(params);
-//        return forumService.getMyForums(sign, params).subscribeOn(Schedulers.io());
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+//        String sign = mRequestHelper.getRequestSign(params);
+//        return mForumService.getMyForums(sign, params).subscribeOn(Schedulers.io());
 //    }
 //
 //    /**
@@ -64,7 +127,7 @@ public class ForumApi {
 //     */
 //    public Observable<ThreadListData> getThreadsList(String fid, String lastTid, String lastTamp,
 //                                                     String type) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        params.put("fid", fid);
 //        params.put("lastTid", lastTid);
 //        params.put("isHome", "1");
@@ -72,8 +135,8 @@ public class ForumApi {
 //        params.put("password", "0");
 //        params.put("special", "0");
 //        params.put("type", type);
-//        String sign = requestHelper.getRequestSign(params);
-//        return forumService.getThreadsList(sign, params).subscribeOn(Schedulers.io());
+//        String sign = mRequestHelper.getRequestSign(params);
+//        return mForumService.getThreadsList(sign, params).subscribeOn(Schedulers.io());
 //    }
 //
 //    /**
@@ -82,11 +145,11 @@ public class ForumApi {
 //     * @param fid 论坛id
 //     */
 //    public Observable<AttendStatusData> addAttention(String fid) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        params.put("fid", fid);
-//        params.put("uid", userStorage.getUid());
-//        String sign = requestHelper.getRequestSign(params);
-//        return forumService.addAttention(sign, params).subscribeOn(Schedulers.io());
+//        params.put("uid", mUserStorage.getUid());
+//        String sign = mRequestHelper.getRequestSign(params);
+//        return mForumService.addAttention(sign, params).subscribeOn(Schedulers.io());
 //    }
 //
 //    /**
@@ -95,11 +158,11 @@ public class ForumApi {
 //     * @param fid 论坛id
 //     */
 //    public Observable<AttendStatusData> delAttention(String fid) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        params.put("fid", fid);
-//        params.put("uid", userStorage.getUid());
-//        String sign = requestHelper.getRequestSign(params);
-//        return forumService.delAttention(sign, params).subscribeOn(Schedulers.io());
+//        params.put("uid", mUserStorage.getUid());
+//        String sign = mRequestHelper.getRequestSign(params);
+//        return mForumService.delAttention(sign, params).subscribeOn(Schedulers.io());
 //    }
 //
 //    /**
@@ -108,11 +171,11 @@ public class ForumApi {
 //     * @param fid 论坛id
 //     */
 //    public Observable<AttendStatusData> getAttentionStatus(String fid) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        params.put("fid", fid);
-//        params.put("uid", userStorage.getUid());
-//        String sign = requestHelper.getRequestSign(params);
-//        return forumService.getAttentionStatus(sign, params).subscribeOn(Schedulers.io());
+//        params.put("uid", mUserStorage.getUid());
+//        String sign = mRequestHelper.getRequestSign(params);
+//        return mForumService.getAttentionStatus(sign, params).subscribeOn(Schedulers.io());
 //    }
 //
 //    /**
@@ -125,7 +188,7 @@ public class ForumApi {
 //     */
 //    public Observable<ThreadSchemaInfo> getThreadSchemaInfo(String tid, String fid, int page,
 //                                                            String pid) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        if (!TextUtils.isEmpty(tid)) {
 //            params.put("tid", tid);
 //        }
@@ -137,12 +200,12 @@ public class ForumApi {
 //            params.put("pid", pid);
 //        }
 //        params.put("nopic", SettingPrefUtil.getLoadPic(mContext) ? "0" : "1");
-//        String sign = requestHelper.getRequestSign(params);
-//        return forumService.getThreadSchemaInfo(sign, params).subscribeOn(Schedulers.io());
+//        String sign = mRequestHelper.getRequestSign(params);
+//        return mForumService.getThreadSchemaInfo(sign, params).subscribeOn(Schedulers.io());
 //    }
 //
 //    public Observable<ThreadInfo> getThreadInfo(String tid, String fid, int page, String pid) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        if (!TextUtils.isEmpty(tid)) {
 //            params.put("tid", tid);
 //        }
@@ -154,11 +217,11 @@ public class ForumApi {
 //            params.put("pid", pid);
 //        }
 //
-//        return forumService.getThreadInfo(params);
+//        return mForumService.getThreadInfo(params);
 //    }
 //
 //    public Observable<ThreadReplyData> getThreadReplyList(String tid, String fid, int page) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        if (!TextUtils.isEmpty(tid)) {
 //            params.put("tid", tid);
 //        }
@@ -166,22 +229,22 @@ public class ForumApi {
 //            params.put("fid", fid);
 //        }
 //        params.put("page", page + "");
-//        return forumService.getsThreadReplyList(params);
+//        return mForumService.getsThreadReplyList(params);
 //    }
 //
 //    public Observable<ThreadLightReplyData> getThreadLightReplyList(String tid, String fid) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        if (!TextUtils.isEmpty(tid)) {
 //            params.put("tid", tid);
 //        }
 //        if (!TextUtils.isEmpty(fid)) {
 //            params.put("fid", fid);
 //        }
-//        return forumService.getThreadLightReplyList(params);
+//        return mForumService.getThreadLightReplyList(params);
 //    }
 //
 //    public Observable<BaseData> addLight(String tid, String fid, String pid) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        if (!TextUtils.isEmpty(tid)) {
 //            params.put("tid", tid);
 //        }
@@ -189,11 +252,11 @@ public class ForumApi {
 //            params.put("fid", fid);
 //        }
 //        params.put("pid", pid);
-//        return forumService.addLight(params).subscribeOn(Schedulers.io());
+//        return mForumService.addLight(params).subscribeOn(Schedulers.io());
 //    }
 //
 //    public Observable<BaseData> addRuLight(String tid, String fid, String pid) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        if (!TextUtils.isEmpty(tid)) {
 //            params.put("tid", tid);
 //        }
@@ -201,7 +264,7 @@ public class ForumApi {
 //            params.put("fid", fid);
 //        }
 //        params.put("pid", pid);
-//        return forumService.addRuLight(params).subscribeOn(Schedulers.io());
+//        return mForumService.addRuLight(params).subscribeOn(Schedulers.io());
 //    }
 //
 //    /**
@@ -212,13 +275,13 @@ public class ForumApi {
 //     * @param fid     论坛id
 //     */
 //    public Observable<PostData> addThread(String title, String content, String fid) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        params.put("title", title);
 //        params.put("content", content);
 //        params.put("fid", fid);
-//        String sign = requestHelper.getRequestSign(params);
+//        String sign = mRequestHelper.getRequestSign(params);
 //        params.put("sign", sign);
-//        return forumService.addThread(params).subscribeOn(Schedulers.io());
+//        return mForumService.addThread(params).subscribeOn(Schedulers.io());
 //    }
 //
 //    /**
@@ -230,7 +293,7 @@ public class ForumApi {
 //     * @param content 内容
 //     */
 //    public Observable<PostData> addReplyByApp(String tid, String fid, String pid, String content) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        params.put("tid", tid);
 //        params.put("content", content);
 //        params.put("fid", fid);
@@ -238,10 +301,10 @@ public class ForumApi {
 //            params.put("quotepid", pid);
 //            params.put("boardpw", "");
 //        }
-//        String sign = requestHelper.getRequestSign(params);
+//        String sign = mRequestHelper.getRequestSign(params);
 //        params.put("sign", sign);
 //        Log.d("groupApi", "gson.toJson(params):" + params);
-//        return forumService.addReplyByApp(params).subscribeOn(Schedulers.io());
+//        return mForumService.addReplyByApp(params).subscribeOn(Schedulers.io());
 //    }
 //
 //    /**
@@ -250,10 +313,10 @@ public class ForumApi {
 //     * @param tid 帖子id
 //     */
 //    public Observable<CollectData> addCollect(String tid) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        params.put("tid", tid);
-//        String sign = requestHelper.getRequestSign(params);
-//        return forumService.addCollect(sign, params).subscribeOn(Schedulers.io());
+//        String sign = mRequestHelper.getRequestSign(params);
+//        return mForumService.addCollect(sign, params).subscribeOn(Schedulers.io());
 //    }
 //
 //    /**
@@ -262,10 +325,10 @@ public class ForumApi {
 //     * @param tid 帖子id
 //     */
 //    public Observable<CollectData> delCollect(String tid) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        params.put("tid", tid);
-//        String sign = requestHelper.getRequestSign(params);
-//        return forumService.delCollect(sign, params).subscribeOn(Schedulers.io());
+//        String sign = mRequestHelper.getRequestSign(params);
+//        return mForumService.delCollect(sign, params).subscribeOn(Schedulers.io());
 //    }
 //
 //    /**
@@ -275,7 +338,7 @@ public class ForumApi {
 //     * (4, "人身攻击等恶意行为");
 //     */
 //    public Observable<BaseData> submitReports(String tid, String pid, String type, String content) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        if (!TextUtils.isEmpty(tid)) {
 //            params.put("tid", tid);
 //        }
@@ -284,20 +347,20 @@ public class ForumApi {
 //        }
 //        params.put("type", type);
 //        params.put("content", content);
-//        String sign = requestHelper.getRequestSign(params);
-//        return forumService.submitReports(sign, params).subscribeOn(Schedulers.io());
+//        String sign = mRequestHelper.getRequestSign(params);
+//        return mForumService.submitReports(sign, params).subscribeOn(Schedulers.io());
 //    }
 //
 //    /**
 //     * 获取推荐帖子列表
 //     */
 //    public Observable<ThreadListData> getRecommendThreadList(String lastTid, String lastTamp) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        params.put("lastTid", lastTid);
 //        params.put("isHome", "1");
 //        params.put("stamp", lastTamp);
-//        String sign = requestHelper.getRequestSign(params);
-//        return forumService.getRecommendThreadList(sign, params).subscribeOn(Schedulers.io());
+//        String sign = mRequestHelper.getRequestSign(params);
+//        return mForumService.getRecommendThreadList(sign, params).subscribeOn(Schedulers.io());
 //    }
 //
 //    /**
@@ -307,12 +370,12 @@ public class ForumApi {
 //     * @param page    页数
 //     */
 //    public Observable<MessageData> getMessageList(String lastTid, int page) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        params.put("messageID", lastTid);
 //        params.put("page", String.valueOf(page));
-//        params.put("uid", userStorage.getUid());
-//        String sign = requestHelper.getRequestSign(params);
-//        return forumService.getMessageList(sign, params).subscribeOn(Schedulers.io());
+//        params.put("uid", mUserStorage.getUid());
+//        String sign = mRequestHelper.getRequestSign(params);
+//        return mForumService.getMessageList(sign, params).subscribeOn(Schedulers.io());
 //    }
 //
 //    /**
@@ -321,10 +384,10 @@ public class ForumApi {
 //     * @param id 消息id
 //     */
 //    public Observable<BaseData> delMessage(String id) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        params.put("id", id);
-//        String sign = requestHelper.getRequestSign(params);
-//        return forumService.delMessage(sign, params).subscribeOn(Schedulers.io());
+//        String sign = mRequestHelper.getRequestSign(params);
+//        return mForumService.delMessage(sign, params).subscribeOn(Schedulers.io());
 //    }
 //
 //    /**
@@ -335,8 +398,8 @@ public class ForumApi {
 //    public Observable<UploadData> upload(String path) {
 //        File file = new File(path);
 //        RequestBody requestFile = RequestBody.create(MediaType.parse(getContentType(path)), file);
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
-//        String sign = requestHelper.getRequestSign(params);
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+//        String sign = mRequestHelper.getRequestSign(params);
 //        params.put("sign", sign);
 //        Map<String, RequestBody> requestBody = new HashMap<>();
 //        for (String key : params.keySet()) {
@@ -345,7 +408,7 @@ public class ForumApi {
 //        }
 //        MultipartBody.Part body =
 //                MultipartBody.Part.createFormData("files", file.getName(), requestFile);
-//        return forumService.upload(body, requestBody);
+//        return mForumService.upload(body, requestBody);
 //    }
 //
 //    private String getContentType(String str) {
@@ -373,7 +436,7 @@ public class ForumApi {
 //     * @param action threadPublish  threadReply
 //     */
 //    public Observable<PermissionData> checkPermission(String fid, String tid, String action) {
-//        Map<String, String> params = requestHelper.getHttpRequestMap();
+//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
 //        if (!TextUtils.isEmpty(fid)) {
 //            params.put("fid", fid);
 //        }
@@ -383,7 +446,7 @@ public class ForumApi {
 //        if (!TextUtils.isEmpty(action)) {
 //            params.put("action", action);
 //        }
-//        String sign = requestHelper.getRequestSign(params);
-//        return forumService.checkPermission(sign, params).subscribeOn(Schedulers.io());
+//        String sign = mRequestHelper.getRequestSign(params);
+//        return mForumService.checkPermission(sign, params).subscribeOn(Schedulers.io());
 //    }
 }
