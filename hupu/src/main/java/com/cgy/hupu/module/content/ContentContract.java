@@ -45,6 +45,8 @@ public interface ContentContract {
 
         void onPageSelected(int page);
 
+        void  onCommentClick();
+
         void onShareClick();
 
         void onReportClick();

@@ -1,13 +1,17 @@
 package com.cgy.hupu.net.forum;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.cgy.hupu.bean.BaseData;
+import com.cgy.hupu.bean.CollectData;
 import com.cgy.hupu.bean.MessageData;
 import com.cgy.hupu.bean.ThreadListData;
+import com.cgy.hupu.bean.ThreadSchemaInfo;
 import com.cgy.hupu.components.UserStorage;
 import com.cgy.hupu.components.retrofit.FastJsonConverterFactory;
 import com.cgy.hupu.components.retrofit.RequestHelper;
+import com.cgy.hupu.utils.SettingPrefUtil;
 
 import java.util.Map;
 
@@ -97,6 +101,56 @@ public class ForumApi {
         params.put("id", id);
         String sign = mRequestHelper.getRequestSign(params);
         return mForumService.delMessage(sign, params).subscribeOn(Schedulers.io());
+    }
+
+    /**
+     * 获取帖子详情
+     * @param tid 帖子id
+     * @param fid 论坛id
+     * @param page 页数
+     * @param pid 回复id
+     * @return
+     */
+    public Observable<ThreadSchemaInfo> getThreadSchemaInfo(String tid, String fid, int page, String pid) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        if (!TextUtils.isEmpty(tid)) {
+            params.put("tid", tid);
+        }
+        if (!TextUtils.isEmpty(fid)) {
+            params.put("fid", fid);
+        }
+        params.put("page", page + "");
+        if (!TextUtils.isEmpty(pid)) {
+            params.put("pid", pid);
+        }
+        params.put("nopic", SettingPrefUtil.getLoadPic(mContext) ? "0" : "1");
+        String sign = mRequestHelper.getRequestSign(params);
+        return mForumService.getThreadSchemaInfo(sign, params).subscribeOn(Schedulers.io());
+
+    }
+
+    /**
+     * 收藏帖子
+     * @param tid 帖子id
+     * @return
+     */
+    public Observable<CollectData> addCollect(String tid) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("tid", tid);
+        String sign = mRequestHelper.getRequestSign(params);
+        return mForumService.addCollect(sign, params).subscribeOn(Schedulers.io());
+    }
+
+    /**
+     * 取消收藏帖子
+     *
+     * @param tid 帖子id
+     */
+    public Observable<CollectData> delCollect(String tid) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("tid", tid);
+        String sign = mRequestHelper.getRequestSign(params);
+        return mForumService.delCollect(sign, params).subscribeOn(Schedulers.io());
     }
 
     /**

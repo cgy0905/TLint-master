@@ -1,5 +1,1 @@
-<<<<<<< HEAD
 include ':app', ':hupu', ':dynamic_proxy', ':retrofit_proxy', 'GreenDaoGenerator'
-=======
-include ':app', ':hupu', ':dynamic_proxy', 'GreenDaoGenerator'
->>>>>>> f414cf9dd0f447140065dd5e1b54f9feb54ec259

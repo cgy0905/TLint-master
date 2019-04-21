@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -13,8 +15,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.cgy.hupu.Constants;
 import com.cgy.hupu.R;
+import com.cgy.hupu.injector.HasComponent;
 import com.cgy.hupu.module.BaseSwipeBackActivity;
+import com.cgy.hupu.module.login.LoginActivity;
+import com.cgy.hupu.module.post.PostActivity;
+import com.cgy.hupu.module.report.ReportActivity;
+import com.cgy.hupu.utils.DisplayUtil;
 import com.cgy.hupu.utils.ResourceUtil;
 import com.cgy.hupu.widget.PagePicker;
 import com.cgy.hupu.widget.ProgressBarCircularIndeterminate;
@@ -26,12 +34,13 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by cgy on 2019/4/17.
  */
 public class ContentActivity extends BaseSwipeBackActivity
-            implements ContentContract.View, ViewPager.OnPageChangeListener, PagePicker.OnJumpListener {
+            implements ContentContract.View, ViewPager.OnPageChangeListener, PagePicker.OnJumpListener, HasComponent<ContentComponent> {
 
     @BindView(R.id.viewpager)
     VerticalViewPager viewpager;
@@ -78,6 +87,7 @@ public class ContentActivity extends BaseSwipeBackActivity
         intent.putExtra("fid", page);
         context.startActivity(intent);
     }
+
     @Inject
     ContentPresenter mPresenter;
 
@@ -117,6 +127,7 @@ public class ContentActivity extends BaseSwipeBackActivity
         initFloatingButton();
         viewpager.setOnPageChangeListener(this);
         progressBar.setBackgroundColor(ResourceUtil.getThemeColor(this));
+        mPresenter.onThreadInfoReceive(tid, fid, pid, page);
     }
 
     private void initFloatingButton() {
@@ -177,6 +188,14 @@ public class ContentActivity extends BaseSwipeBackActivity
             tvPre.setTextColor(getResources().getColor(R.color.blue));
             tvPre.setClickable(true);
         }
+
+        if (page == totalPage) {
+            tvNext.setTextColor(getResources().getColor(R.color.base_text_gray));
+            tvNext.setClickable(false);
+        } else {
+            tvNext.setTextColor(getResources().getColor(R.color.blue));
+            tvNext.setClickable(true);
+        }
     }
 
     @Override
@@ -186,48 +205,57 @@ public class ContentActivity extends BaseSwipeBackActivity
 
     @Override
     public void isCollected(boolean isCollected) {
-
+        floatingCollect.setImageResource(isCollected ? R.drawable.ic_menu_star : R.drawable.ic_menu_star_outline);
+        floatingCollect.setLabelText(isCollected ? "取消收藏" : "收藏");
     }
 
     @Override
     public void onError(String error) {
-
+        tvError.setText(error);
+        rlProgress.setVisibility(View.GONE);
+        viewpager.setVisibility(View.GONE);
+        rlError.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onToggleFloatingMenu() {
-
+        floatingMenu.toggle(true);
     }
 
     @Override
     public void showLoginUi() {
-
+        LoginActivity.startActivity(this);
     }
 
     @Override
     public void showReportUi() {
-
+        ReportActivity.startActivity(this, tid, "");
     }
 
     @Override
     public void showPostUi(String title) {
-
+        PostActivity.startActivity(this, Constants.TYPE_COMMENT, fid, tid, "", title);
     }
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
     }
 
     @Override
     public void onPageSelected(int position) {
-
+        mPresenter.updatePage(position);
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
 
     }
+
+    @Override
+    public ContentComponent getComponent() {
+        return mContentComponent;
+    }
+
 
     public class MyAdapter extends FragmentPagerAdapter {
 
@@ -252,6 +280,56 @@ public class ContentActivity extends BaseSwipeBackActivity
 
     @Override
     public void onJump(int page) {
+        mPresenter.onPageSelected(page);
+    }
 
+    @OnClick(R.id.floating_comment)
+    void setFloatingCommentClick() {
+        mPresenter.onCommentClick();
+    }
+
+    @OnClick(R.id.floating_share)
+    void floatingShare() {
+        mPresenter.onShareClick();
+    }
+
+    @OnClick(R.id.floating_report)
+    void floatingReport() {
+        mPresenter.onReportClick();
+    }
+
+    @OnClick(R.id.floating_collect)
+    void floatingCollect() {
+        mPresenter.onCollectClick();
+    }
+
+    @OnClick(R.id.tv_pre)
+    void tvPre() {
+        mPresenter.onPagePre();
+    }
+
+    @OnClick(R.id.tv_next)
+    void tvNext() {
+        mPresenter.onPageNext();
+    }
+
+    @OnClick(R.id.tv_pageNum)
+    void tvPageNum() {
+        if (mPagePicker.isShowing()) {
+            mPagePicker.dismiss();
+        } else {
+            mPagePicker.showAtLocation(frameLayout, Gravity.BOTTOM, 0, DisplayUtil.dip2px(this, 40));
+        }
+    }
+
+    @OnClick(R.id.btn_reload)
+    void btnReload() {
+        mPresenter.onReload();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.detachView();
     }
 }
