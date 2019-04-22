@@ -1,8 +1,10 @@
 package com.cgy.hupu.net.forum;
 
 import com.cgy.hupu.bean.BaseData;
+import com.cgy.hupu.bean.CollectData;
 import com.cgy.hupu.bean.MessageData;
 import com.cgy.hupu.bean.ThreadListData;
+import com.cgy.hupu.bean.ThreadSchemaInfo;
 
 import java.util.Map;
 
@@ -32,4 +34,15 @@ public interface ForumService {
     @POST("user/delUserMessage")
     @FormUrlEncoded
     Observable<BaseData> delMessage(@Field("sign") String sign, @FieldMap Map<String, String> params);
+
+    @GET("threads/getThreadsSchemaInfo")
+    Observable<ThreadSchemaInfo> getThreadSchemaInfo(@Query("sign") String sign, @QueryMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST("threads/threadCollectAdd")
+    Observable<CollectData> addCollect(@Field("sign") String sign, @FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST("threads/threadCollectRemove")
+    Observable<CollectData> delCollect(@Field("sign") String sign, @FieldMap Map<String, String> params);
 }

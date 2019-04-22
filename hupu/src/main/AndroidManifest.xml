@@ -43,8 +43,9 @@
         <activity android:name=".module.account.AccountActivity" />
         <activity android:name=".module.setting.SettingActivity" />
         <activity android:name=".module.post.PostActivity" />
-        <activity android:name=".module.browser.BrowserActivity"></activity>
+        <activity android:name=".module.browser.BrowserActivity" />
         <activity android:name=".module.content.ContentActivity" />
+        <activity android:name=".module.report.ReportActivity"></activity>
     </application>
 
 </manifest>
