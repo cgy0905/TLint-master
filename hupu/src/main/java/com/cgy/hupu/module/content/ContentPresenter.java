@@ -25,7 +25,6 @@ public class ContentPresenter implements ContentContract.Presenter{
     private ContentContract.View mContentView;
     private Subscription mSubscription;
     private String tid;
-    private
     @Inject
     public ContentPresenter(){
 
