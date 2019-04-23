@@ -22,7 +22,7 @@ import rx.android.schedulers.AndroidSchedulers;
  * Created by cgy on 2019/4/19.
  */
 @PerActivity
-public class ContentPresenter implements ContentContract.Presenter{
+public class ContentPresenter implements ContentContract.Presenter {
     private ForumApi mForumApi;
     private Context mContext;
     private UserStorage mUserStorage;
@@ -30,11 +30,8 @@ public class ContentPresenter implements ContentContract.Presenter{
 
     private ContentContract.View mContentView;
     private Subscription mSubscription;
+
     private String tid;
-<<<<<<< HEAD
-    @Inject
-    public ContentPresenter(){
-=======
     private String fid;
     private String pid;
 
@@ -47,7 +44,7 @@ public class ContentPresenter implements ContentContract.Presenter{
 
 
     @Inject
-    public ContentPresenter(ForumApi forumApi, Context context, UserStorage userStorage, Bus bus){
+    public ContentPresenter(ForumApi forumApi, Context context, UserStorage userStorage, Bus bus) {
         mForumApi = forumApi;
         mContext = context;
         mUserStorage = userStorage;
@@ -116,7 +113,7 @@ public class ContentPresenter implements ContentContract.Presenter{
         if (currentPage <= 1) {
             currentPage = 1;
         }
-        mContentView.setCurrentItem( currentPage - 1);
+        mContentView.setCurrentItem(currentPage - 1);
     }
 
     @Override
@@ -185,7 +182,7 @@ public class ContentPresenter implements ContentContract.Presenter{
                         mContentView.isCollected(isCollected);
                     }
                 }, throwable ->
-                    ToastUtil.showToast("收藏失败"));
+                        ToastUtil.showToast("收藏失败"));
     }
 
     private void delCollect() {

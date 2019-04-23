@@ -9,6 +9,8 @@ import com.cgy.hupu.components.okhttp.OkHttpHelper;
 import com.cgy.hupu.db.ForumDao;
 import com.cgy.hupu.db.ReadThreadDao;
 import com.cgy.hupu.db.ThreadDao;
+import com.cgy.hupu.db.ThreadInfoDao;
+import com.cgy.hupu.db.ThreadReplyDao;
 import com.cgy.hupu.db.UserDao;
 import com.cgy.hupu.injector.module.ApiModule;
 import com.cgy.hupu.injector.module.ApplicationModule;
@@ -43,6 +45,10 @@ public interface ApplicationComponent {
     ForumDao getForumDao();
 
     ThreadDao getThreadDao();
+
+    ThreadInfoDao getThreadInfoDao();
+
+    ThreadReplyDao getThreadReplyDao();
 
     ReadThreadDao getReadThreadDao();
 

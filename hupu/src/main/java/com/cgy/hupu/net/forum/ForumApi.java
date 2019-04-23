@@ -6,13 +6,18 @@ import android.text.TextUtils;
 import com.cgy.hupu.bean.BaseData;
 import com.cgy.hupu.bean.CollectData;
 import com.cgy.hupu.bean.MessageData;
+import com.cgy.hupu.bean.ThreadLightReplyData;
 import com.cgy.hupu.bean.ThreadListData;
+import com.cgy.hupu.bean.ThreadReplyData;
 import com.cgy.hupu.bean.ThreadSchemaInfo;
 import com.cgy.hupu.components.UserStorage;
 import com.cgy.hupu.components.retrofit.FastJsonConverterFactory;
 import com.cgy.hupu.components.retrofit.RequestHelper;
+import com.cgy.hupu.db.ThreadInfo;
+import com.cgy.hupu.db.ThreadReply;
 import com.cgy.hupu.utils.SettingPrefUtil;
 
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.OkHttpClient;
@@ -151,6 +156,69 @@ public class ForumApi {
         params.put("tid", tid);
         String sign = mRequestHelper.getRequestSign(params);
         return mForumService.delCollect(sign, params).subscribeOn(Schedulers.io());
+    }
+
+    public Observable<ThreadInfo> getThreadInfo(String tid, String fid, int page, String pid) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        if (!TextUtils.isEmpty(tid)) {
+            params.put("tid", tid);
+        }
+        if (!TextUtils.isEmpty(fid)) {
+            params.put("fid", fid);
+        }
+        params.put("page", page + "");
+        if (!TextUtils.isEmpty(pid)) {
+            params.put("pid", pid);
+        }
+
+        return mForumService.getThreadInfo(params);
+    }
+
+    public Observable<ThreadReplyData> getThreadReplyList(String tid, String fid, int page) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        if (!TextUtils.isEmpty(tid)) {
+            params.put("tid", tid);
+        }
+        if (!TextUtils.isEmpty(fid)) {
+            params.put("fid", fid);
+        }
+        params.put("page", page + "");
+        return mForumService.getThreadReplyList(params);
+    }
+
+    public Observable<ThreadLightReplyData> getThreadLightReplyList(String tid, String fid) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        if (!TextUtils.isEmpty(tid)) {
+            params.put("tid", tid);
+        }
+        if (!TextUtils.isEmpty(fid)) {
+            params.put("fid", fid);
+        }
+        return mForumService.getThreadLightReplyList(params);
+    }
+
+    public Observable<BaseData> addLight(String tid, String fid, String pid) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        if (!TextUtils.isEmpty(tid)) {
+            params.put("tid", tid);
+        }
+        if (!TextUtils.isEmpty(fid)) {
+            params.put("fid", fid);
+        }
+        params.put("pid", pid);
+        return mForumService.addLight(params).subscribeOn(Schedulers.io());
+    }
+
+    public Observable<BaseData> addRuLight(String tid, String fid, String pid) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        if (!TextUtils.isEmpty(tid)) {
+            params.put("tid", tid);
+        }
+        if (!TextUtils.isEmpty(fid)) {
+            params.put("fid", fid);
+        }
+        params.put("pid", pid);
+        return mForumService.addRuLight(params).subscribeOn(Schedulers.io());
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.gzsll.hupu.widget;
+package com.cgy.hupu.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,25 +10,25 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.gzsll.hupu.BuildConfig;
-import com.gzsll.hupu.components.jockeyjs.Jockey;
-import com.gzsll.hupu.components.jockeyjs.JockeyAsyncHandler;
-import com.gzsll.hupu.components.jockeyjs.JockeyCallback;
-import com.gzsll.hupu.components.jockeyjs.JockeyHandler;
-import com.gzsll.hupu.components.jockeyjs.JockeyImpl;
-import com.gzsll.hupu.util.NetWorkUtil;
+import com.cgy.hupu.BuildConfig;
+import com.cgy.hupu.components.jockeyjs.Jockey;
+import com.cgy.hupu.components.jockeyjs.JockeyAsyncHandler;
+import com.cgy.hupu.components.jockeyjs.JockeyCallback;
+import com.cgy.hupu.components.jockeyjs.JockeyHandler;
+import com.cgy.hupu.components.jockeyjs.JockeyImpl;
+import com.cgy.hupu.utils.NetWorkUtil;
 
 import java.net.URI;
 import java.util.Map;
 
 /**
- * Created by sll on 2015/6/17.
+ * Created by cgy on 2019/4/22.
  */
 public class JockeyJsWebView extends WebView {
+
     private Jockey jockey;
     private JockeyAsyncHandler jockeyAsyncHandler;
     private H5Callback callback;
-
 
     public JockeyJsWebView(Context context) {
         this(context, null);
@@ -65,7 +65,6 @@ public class JockeyJsWebView extends WebView {
             setLayerType(0, null);
         }
     }
-
     public void initJockey() {
         jockeyAsyncHandler = new JockeyAsyncHandler() {
             @Override
@@ -80,7 +79,7 @@ public class JockeyJsWebView extends WebView {
             jockey = JockeyImpl.getDefault();
         }
         jockey.configure(this);
-        jockey.setWebViewClient(new WebViewClient() {
+        jockey.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 try {
@@ -93,6 +92,7 @@ public class JockeyJsWebView extends WebView {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
                 return super.shouldOverrideUrlLoading(view, url);
             }
 
@@ -113,8 +113,7 @@ public class JockeyJsWebView extends WebView {
             }
 
             @Override
-            public void onReceivedError(WebView view, WebResourceRequest request,
-                                        WebResourceError error) {
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
                 if (callback != null) {
                     callback.onReceivedError(view, request, error);
@@ -122,6 +121,7 @@ public class JockeyJsWebView extends WebView {
             }
         });
         setJockeyEvents();
+
     }
 
     public boolean isJockeyScheme(URI uri) {
@@ -164,32 +164,30 @@ public class JockeyJsWebView extends WebView {
 
     @Override
     public void destroy() {
+        super.destroy();
         jockey.configure(null);
         setWebChromeClient(null);
         setWebViewClient(null);
-        super.destroy();
     }
 
     private OnScrollChangedCallback mOnScrollChangedCallback;
 
+    public void setOnScrollChangedCallback(OnScrollChangedCallback onScrollChangedCallback) {
+        this.mOnScrollChangedCallback = onScrollChangedCallback;
+    }
+    public OnScrollChangedCallback getOnScrollChangedCallback() {
+        return mOnScrollChangedCallback;
+    }
+    public interface OnScrollChangedCallback {
+        void onScroll(int dx, int dy);
+    }
+
     @Override
-    protected void onScrollChanged(final int l, final int t, final int oldl, final int oldt) {
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
 
         if (mOnScrollChangedCallback != null) {
             mOnScrollChangedCallback.onScroll(l - oldl, t - oldt);
         }
-    }
-
-    public OnScrollChangedCallback getOnScrollChangedCallback() {
-        return mOnScrollChangedCallback;
-    }
-
-    public void setOnScrollChangedCallback(final OnScrollChangedCallback onScrollChangedCallback) {
-        mOnScrollChangedCallback = onScrollChangedCallback;
-    }
-
-    public interface OnScrollChangedCallback {
-        void onScroll(int dx, int dy);
     }
 }

@@ -54,57 +54,57 @@ public class GreenDaoGenerator {
     thread.addIntProperty("lightReply");
     thread.addIntProperty("type");
 
-//    Entity threadInfo = schema.addEntity("ThreadInfo");
-//    threadInfo.addStringProperty("tid");
-//    threadInfo.addStringProperty("pid");
-//    threadInfo.addIntProperty("page");
-//    threadInfo.addStringProperty("nopic");
-//    threadInfo.addIntProperty("postAuthorPuid");
-//    threadInfo.addStringProperty("time");
-//    threadInfo.addStringProperty("userImg");
-//    threadInfo.addStringProperty("author_puid");
-//    threadInfo.addStringProperty("username");
-//    threadInfo.addStringProperty("fid");
-//    threadInfo.addStringProperty("visits");
-//    threadInfo.addStringProperty("recommend_num");
-//    threadInfo.addStringProperty("via");
-//    threadInfo.addStringProperty("update_info");
-//    threadInfo.addStringProperty("content");
-//    threadInfo.addStringProperty("title");
-//    threadInfo.addIntProperty("totalPage");
-//    threadInfo.addStringProperty("forumName");
-//
-//    Entity reply = schema.addEntity("ThreadReply");
-//    reply.addStringProperty("tid");
-//    reply.addStringProperty("pid");
-//    reply.addStringProperty("puid");
-//    reply.addStringProperty("via");
-//    reply.addStringProperty("content");
-//    reply.addStringProperty("create_time");
-//    reply.addStringProperty("update_info");
-//    reply.addIntProperty("light_count");
-//    reply.addIntProperty("user_banned");
-//    reply.addIntProperty("floor");
-//    reply.addStringProperty("time");
-//    reply.addStringProperty("userName");
-//    reply.addStringProperty("userImg");
-//    reply.addStringProperty("smallcontent");
-//    reply.addStringProperty("togglecontent");
-//    reply.addIntProperty("index");
-//    reply.addBooleanProperty("isLight");
-//    reply.addStringProperty("quoteHeader");
-//    reply.addStringProperty("quoteContent");
-//    reply.addStringProperty("quoteToggle");
-//    reply.addIntProperty("pageIndex");
-//
+    Entity threadInfo = schema.addEntity("ThreadInfo");
+    threadInfo.addStringProperty("tid");
+    threadInfo.addStringProperty("pid");
+    threadInfo.addIntProperty("page");
+    threadInfo.addStringProperty("nopic");
+    threadInfo.addIntProperty("postAuthorPuid");
+    threadInfo.addStringProperty("time");
+    threadInfo.addStringProperty("userImg");
+    threadInfo.addStringProperty("author_puid");
+    threadInfo.addStringProperty("username");
+    threadInfo.addStringProperty("fid");
+    threadInfo.addStringProperty("visits");
+    threadInfo.addStringProperty("recommend_num");
+    threadInfo.addStringProperty("via");
+    threadInfo.addStringProperty("update_info");
+    threadInfo.addStringProperty("content");
+    threadInfo.addStringProperty("title");
+    threadInfo.addIntProperty("totalPage");
+    threadInfo.addStringProperty("forumName");
+
+    Entity reply = schema.addEntity("ThreadReply");
+    reply.addStringProperty("tid");
+    reply.addStringProperty("pid");
+    reply.addStringProperty("puid");
+    reply.addStringProperty("via");
+    reply.addStringProperty("content");
+    reply.addStringProperty("create_time");
+    reply.addStringProperty("update_info");
+    reply.addIntProperty("light_count");
+    reply.addIntProperty("user_banned");
+    reply.addIntProperty("floor");
+    reply.addStringProperty("time");
+    reply.addStringProperty("userName");
+    reply.addStringProperty("userImg");
+    reply.addStringProperty("smallcontent");
+    reply.addStringProperty("togglecontent");
+    reply.addIntProperty("index");
+    reply.addBooleanProperty("isLight");
+    reply.addStringProperty("quoteHeader");
+    reply.addStringProperty("quoteContent");
+    reply.addStringProperty("quoteToggle");
+    reply.addIntProperty("pageIndex");
+
     Entity readThread = schema.addEntity("ReadThread");
     readThread.addIdProperty();
     readThread.addStringProperty("tid");
-//
-//    Entity image = schema.addEntity("ImageCache");
-//    image.addIdProperty();
-//    image.addStringProperty("url");
-//    image.addStringProperty("path");
+
+    Entity image = schema.addEntity("ImageCache");
+    image.addIdProperty();
+    image.addStringProperty("url");
+    image.addStringProperty("path");
 
     File f = new File(GREEN_DAO_CODE_PATH);
     if (!f.exists()) {

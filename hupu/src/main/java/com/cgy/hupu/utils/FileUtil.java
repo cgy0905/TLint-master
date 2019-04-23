@@ -13,7 +13,7 @@ import java.io.InputStream;
 /**
  * Created by cgy on 2018/12/17 .
  */
-class FileUtil {
+public class FileUtil {
     public static boolean hasSDCard() {
         boolean mHasSDCard = false;
         if (Environment.MEDIA_MOUNTED.endsWith(Environment.getExternalStorageState())) {

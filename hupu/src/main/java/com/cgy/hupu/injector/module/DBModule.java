@@ -5,8 +5,11 @@ import android.content.Context;
 import com.cgy.hupu.db.DaoMaster;
 import com.cgy.hupu.db.DaoSession;
 import com.cgy.hupu.db.ForumDao;
+import com.cgy.hupu.db.ImageCacheDao;
 import com.cgy.hupu.db.ReadThreadDao;
 import com.cgy.hupu.db.ThreadDao;
+import com.cgy.hupu.db.ThreadInfoDao;
+import com.cgy.hupu.db.ThreadReplyDao;
 import com.cgy.hupu.db.UserDao;
 
 import javax.inject.Singleton;
@@ -60,5 +63,19 @@ public class DBModule {
     @Singleton
     ReadThreadDao getReadThreadDao(DaoSession session) {
         return session.getReadThreadDao();
+    }
+
+    @Provides
+    @Singleton
+    ThreadInfoDao getThreadInfoDao(DaoSession session) { return session.getThreadInfoDao(); }
+
+    @Provides
+    @Singleton
+    ThreadReplyDao getThreadReplyDao(DaoSession session) { return session.getThreadReplyDao(); }
+
+    @Provides
+    @Singleton
+    ImageCacheDao getImageCacheDao(DaoSession session) {
+        return session.getImageCacheDao();
     }
 }
