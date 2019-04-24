@@ -3,6 +3,7 @@ package com.cgy.hupu.module.content;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.webkit.JavascriptInterface;
 
 import com.cgy.hupu.bean.BaseData;
 import com.cgy.hupu.bean.BaseError;
@@ -16,24 +17,30 @@ import com.cgy.hupu.db.ThreadReply;
 import com.cgy.hupu.net.forum.ForumApi;
 import com.cgy.hupu.otto.UpdateContentPageEvent;
 import com.cgy.hupu.provider.LocalImageProvider;
+import com.cgy.hupu.utils.ConfigUtil;
 import com.cgy.hupu.utils.FileUtil;
+import com.cgy.hupu.utils.FormatUtil;
 import com.cgy.hupu.utils.ToastUtil;
 import com.facebook.common.file.FileUtils;
 import com.squareup.otto.Bus;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by cgy on 2019/4/23.
  */
-public class ContentPagerPresenter implements ContentPagerContract.Presenter{
+public class ContentPagerPresenter implements ContentPagerContract.Presenter {
 
     private ContentRepository mContentRepository;
     private ForumApi mForumApi;
@@ -96,7 +103,6 @@ public class ContentPagerPresenter implements ContentPagerContract.Presenter{
     }
 
 
-
     @Override
     public void onReply(int area, int index) {
         if (!isLogin()) {
@@ -105,7 +111,6 @@ public class ContentPagerPresenter implements ContentPagerContract.Presenter{
         ThreadReply reply = area == 0 ? lightReplies.get(index) : replies.get(index);
         mContentView.showReplyUi(fid, tid, reply.getPid(), reply.getContent());
     }
-
 
 
     @Override
@@ -184,7 +189,7 @@ public class ContentPagerPresenter implements ContentPagerContract.Presenter{
                     String tid = uri.getLastPathSegment();
                     String page = uri.getQueryParameter("page");
                     String pid = uri.getQueryParameter("pid");
-                    mContentView.showContentUi(tid, pid,TextUtils.isEmpty(page) ? 1 : Integer.valueOf(page));
+                    mContentView.showContentUi(tid, pid, TextUtils.isEmpty(page) ? 1 : Integer.valueOf(page));
                 } else if (url.contains("board")) {
                     String boardId = url.substring(url.lastIndexOf("/") + 1);
                     mContentView.showThreadListUi(boardId);
@@ -203,8 +208,8 @@ public class ContentPagerPresenter implements ContentPagerContract.Presenter{
     }
 
     @Override
-    public ContentPagerPresenter.HupuBridge getJavaScriptInterface() {
-        return null;
+    public HupuBridge getJavaScriptInterface() {
+        return new HupuBridge();
     }
 
     public class AddLight {
@@ -218,25 +223,72 @@ public class ContentPagerPresenter implements ContentPagerContract.Presenter{
     }
 
     private void loadReplies(String tid, String fid, int page) {
-
+        Subscription subscription = mContentRepository.getReplies(fid, tid, page)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(threadReplies -> {
+                    replies = threadReplies;
+                    if (page == 1) {
+                        mContentView.sendMessageToJS("addReplyTitle", "\"全部回帖\"");
+                    }
+                    if (threadReplies.isEmpty()) {
+                        mContentView.loadUrl("javascript:addReplyEmpty();");
+                    } else {
+                        for (int i = 0; i < threadReplies.size(); i++) {
+                            ThreadReply reply = threadReplies.get(i);
+                            reply.setIndex(i);
+                            mContentView.sendMessageToJS("addReply", reply);
+                        }
+                    }
+                    mContentView.loadUrl("javascript:reloadReplyStuff();");
+                    mContentView.hideLoading();
+                }, throwable -> {
+                    throwable.printStackTrace();
+                    mContentView.onError();
+                });
+        mCompositeSubscription.add(subscription);
     }
 
     private void loadLightReplies(String tid, String fid) {
-
+        Subscription subscription = mContentRepository.getLightReplies(fid, tid)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<ThreadReply>>() {
+                    @Override
+                    public void call(List<ThreadReply> threadReplies) {
+                        lightReplies = threadReplies;
+                        if (!threadReplies.isEmpty()) {
+                            mContentView.sendMessageToJS("addLightTitle", "\"这些回帖亮了\"");
+                            for (int i = 0; i < threadReplies.size(); i++) {
+                                ThreadReply reply = threadReplies.get(i);
+                                reply.setIndex(i);
+                                mContentView.sendMessageToJS("addLightPost", reply);
+                            }
+                            mContentView.loadUrl("javascript:reloadLightStuff()");
+                        }
+                    }
+                }, throwable -> {
+                    throwable.printStackTrace();
+                    mContentView.onError();
+                });
+        mCompositeSubscription.add(subscription);
     }
 
     @Override
     public void attachView(@NonNull ContentPagerContract.View view) {
-
+        mContentView = view;
+        mContentView.showLoading();
     }
 
     @Override
     public void detachView() {
-
+        if (mCompositeSubscription != null && !mCompositeSubscription.isUnsubscribed()) {
+            mCompositeSubscription.unsubscribe();
+        }
+        mContentView = null;
     }
 
     public class HupuBridge {
 
+        @JavascriptInterface
         public String replaceImage(final String imageUrl, final int index) {
             if (imageMap.contains(imageUrl)) {
                 return LocalImageProvider.constructUri(imageMap.get(imageUrl));
@@ -247,10 +299,57 @@ public class ContentPagerPresenter implements ContentPagerContract.Presenter{
                         .list();
                 if (!imageCaches.isEmpty()) {
                     String path = imageCaches.get(0).getPath();
-                    if (!TextUtils.isEmpty(path) && File.exist(path)) {
-
+                    if (!TextUtils.isEmpty(path) && FileUtil.exist(path)) {
+                        imageMap.put(imageUrl, path);
+                        return LocalImageProvider.constructUri(path);
                     }
                 }
+                if (taskArray.indexOf(imageUrl) < 0) {
+                    taskArray.add(imageUrl);
+                    Subscription subscription = Observable.create(new Observable.OnSubscribe<String>() {
+                        @Override
+                        public void call(Subscriber<? super String> subscriber) {
+                            try {
+                                //下载图片
+                                File imgFile = new File(ConfigUtil.getCachePath() + File.separator + FormatUtil.getFileNameFromUrl(imageUrl));
+                                if (!imgFile.exists()) {
+                                    mOkHttpHelper.httpDownload(imageUrl, imgFile);
+                                }
+                                String path = imgFile.getAbsolutePath();
+                                if (!TextUtils.isEmpty(path)) {
+                                    imageMap.put(imageUrl, path);
+                                    mImageCacheDao.queryBuilder()
+                                            .where(ImageCacheDao.Properties.Url.eq(imageUrl))
+                                            .buildDelete()
+                                            .executeDeleteWithoutDetachingEntities();
+                                    ImageCache cache = new ImageCache(null, imageUrl, path);
+                                    mImageCacheDao.insert(cache);
+                                }
+                                subscriber.onNext(path);
+                                subscriber.onCompleted();
+                            } catch (Exception e) {
+                                subscriber.onError(e);
+                            }
+                        }
+                    })
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(s -> {
+                                if (!TextUtils.isEmpty(s)) {
+                                    mContentView.loadUrl("javascript:replaceImage(\""
+                                            + LocalImageProvider.constructUri(s)
+                                            + "\","
+                                            + index
+                                            + ");");
+                                }
+                            }, throwable -> mContentView.loadUrl("javascript:replaceImage(\""
+                                    + LocalImageProvider.constructUri(imageUrl)
+                                    + "\","
+                                    + index
+                                    + ");"));
+                    mCompositeSubscription.add(subscription);
+                }
+                return "file:///android_asset/hupu_thread_default.png";
             }
         }
     }

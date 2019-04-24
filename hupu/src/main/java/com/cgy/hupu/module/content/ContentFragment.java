@@ -7,8 +7,15 @@ import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 
+import com.cgy.hupu.Constants;
 import com.cgy.hupu.R;
 import com.cgy.hupu.module.BaseFragment;
+import com.cgy.hupu.module.browser.BrowserActivity;
+import com.cgy.hupu.module.login.LoginActivity;
+import com.cgy.hupu.module.post.PostActivity;
+import com.cgy.hupu.module.report.ReportActivity;
+import com.cgy.hupu.module.userprofile.UserProfileActivity;
+import com.cgy.hupu.utils.SettingPrefUtil;
 import com.cgy.hupu.widget.H5Callback;
 import com.cgy.hupu.widget.JockeyJsWebView;
 
@@ -78,47 +85,60 @@ public class ContentFragment extends BaseFragment implements ContentPagerContrac
 
     @Override
     public void initData() {
+        webView.loadUrl(SettingPrefUtil.getNightModel(getActivity()) ?
+                "file:///android_asset/hupu_thread_night.html"
+                : "file://android_asset/hupu_thread.html");
+    }
 
+    @Override
+    public void onReloadClicked() {
+        mContentPresenter.onReLoad();
     }
 
     @Override
     public void showLoading() {
-
+        showProgress(true);
     }
 
     @Override
     public void hideLoading() {
-
+        showContent(true);
     }
 
     @Override
     public void onError() {
-
+        setEmptyText("数据加载失败");
+        showError(true);
     }
 
     @Override
     public void sendMessageToJS(String handlerName, Object object) {
-
+        webView.sendMessageToJS(handlerName, object);
     }
 
     @Override
     public void loadUrl(String url) {
-
+        webView.loadUrl(url);
     }
 
     @Override
     public void showReplyUi(String fid, String tid, String pid, String title) {
-
+        PostActivity.startActivity(getActivity(), Constants.TYPE_REPLY, fid, tid, pid, title);
     }
 
     @Override
     public void showReportUi(String tid, String pid) {
-
+        ReportActivity.startActivity(getActivity(), tid, pid);
     }
 
     @Override
     public void showBrowserUi(String url) {
+        BrowserActivity.startActivity(getActivity(), url);
+    }
 
+    @Override
+    public void showContentUi(String tid, String pid, int page) {
+        ContentActivity.startActivity(getActivity(), "", fid, pid, page);
     }
 
     @Override
@@ -128,17 +148,17 @@ public class ContentFragment extends BaseFragment implements ContentPagerContrac
 
     @Override
     public void showUserProfileUi(String uid) {
-
+        UserProfileActivity.startActivity(getActivity(), uid);
     }
 
     @Override
     public void showLoginUi() {
-
+        LoginActivity.startActivity(getActivity());
     }
 
     @Override
     public void onClose() {
-
+        getActivity().finish();
     }
 
     @Override
@@ -148,7 +168,7 @@ public class ContentFragment extends BaseFragment implements ContentPagerContrac
 
     @Override
     public void onPageFinished(WebView webView, String str) {
-
+        mContentPresenter.onThreadInfoReceive(tid, fid, pid, page);
     }
 
     @Override
@@ -173,6 +193,11 @@ public class ContentFragment extends BaseFragment implements ContentPagerContrac
 
     @Override
     public void onScroll(int dx, int dy) {
-
+        if (Math.abs(dy) > 4) {
+            ContentActivity activity = (ContentActivity) getActivity();
+            if (activity != null) {
+                activity.setFloatingMenuVisibility(dy < 0);
+            }
+        }
     }
 }
