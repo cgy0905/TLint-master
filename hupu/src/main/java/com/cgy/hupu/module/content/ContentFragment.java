@@ -7,13 +7,18 @@ import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 
+import com.alibaba.fastjson.JSON;
 import com.cgy.hupu.Constants;
 import com.cgy.hupu.R;
+import com.cgy.hupu.bean.ImagePreview;
+import com.cgy.hupu.components.jockeyjs.JockeyHandler;
 import com.cgy.hupu.module.BaseFragment;
 import com.cgy.hupu.module.browser.BrowserActivity;
+import com.cgy.hupu.module.imagepreview.ImagePreviewActivity;
 import com.cgy.hupu.module.login.LoginActivity;
 import com.cgy.hupu.module.post.PostActivity;
 import com.cgy.hupu.module.report.ReportActivity;
+import com.cgy.hupu.module.thread.list.ThreadListActivity;
 import com.cgy.hupu.module.userprofile.UserProfileActivity;
 import com.cgy.hupu.utils.SettingPrefUtil;
 import com.cgy.hupu.widget.H5Callback;
@@ -143,7 +148,7 @@ public class ContentFragment extends BaseFragment implements ContentPagerContrac
 
     @Override
     public void showThreadListUi(String fid) {
-
+        ThreadListActivity.startActivity(getActivity(), fid);
     }
 
     @Override
@@ -183,12 +188,53 @@ public class ContentFragment extends BaseFragment implements ContentPagerContrac
 
     @Override
     public void setJockeyEvents() {
-
+        webView.onJSEvent("showImg", new JockeyHandler() {
+            @Override
+            protected void doPerform(Map<Object, Object> payload) {
+                ImagePreview preview = JSON.parseObject(JSON.toJSONString(payload), ImagePreview.class);
+                ImagePreviewActivity.startActivity(getActivity(), preview.imgs.get(preview.index),
+                        preview.imgs);
+            }
+        });
+        webView.onJSEvent("showUrl", new JockeyHandler() {
+            @Override
+            protected void doPerform(Map<Object, Object> payload) {
+                mContentPresenter.handlerUrl(((String)payload.get("url")));
+            }
+        });
+        webView.onJSEvent("showUser", new JockeyHandler() {
+            @Override
+            protected void doPerform(Map<Object, Object> payload) {
+                UserProfileActivity.startActivity(getActivity(), ((String) payload.get("uid")));
+            }
+        });
+        webView.onJSEvent("showMenu", new JockeyHandler() {
+            @Override
+            protected void doPerform(Map<Object, Object> payload) {
+                int area = Integer.valueOf((String)payload.get("area"));
+                int index = Integer.valueOf((String) payload.get("index"));
+                String type = (String) payload.get("type");
+                switch (type) {
+                    case "light":
+                        mContentPresenter.addLight(area, index);
+                        break;
+                    case "rulight":
+                        mContentPresenter.addRuLight(area, index);
+                        break;
+                    case "reply":
+                        mContentPresenter.onReply(area, index);
+                        break;
+                    case "report":
+                        mContentPresenter.onReport(area, index);
+                        break;
+                }
+            }
+        });
     }
 
     @Override
     public void openBrowser(String url) {
-
+        mContentPresenter.handlerUrl(url);
     }
 
     @Override
@@ -198,6 +244,15 @@ public class ContentFragment extends BaseFragment implements ContentPagerContrac
             if (activity != null) {
                 activity.setFloatingMenuVisibility(dy < 0);
             }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mContentPresenter.detachView();
+        if (webView != null) {
+            webView.destroy();
         }
     }
 }
