@@ -24,6 +24,7 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import rx.Observable;
+import rx.Subscription;
 import rx.schedulers.Schedulers;
 
 /**
@@ -158,6 +159,26 @@ public class ForumApi {
         return mForumService.delCollect(sign, params).subscribeOn(Schedulers.io());
     }
 
+    /**
+     * (1, "广告或垃圾内容");
+     * (2, "色情暴露内容");
+     * (3, "政治敏感话题");
+     * (4, "人身攻击等恶意行为");
+     */
+    public Observable<BaseData> submitReports(String tid, String pid, String type, String content) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        if (!TextUtils.isEmpty(tid)) {
+            params.put("tid", tid);
+        }
+        if (!TextUtils.isEmpty(pid)) {
+            params.put("pid", pid);
+        }
+        params.put("type", type);
+        params.put("content", content);
+        String sign = mRequestHelper.getRequestSign(params);
+        return mForumService.submitReports(sign, params).subscribeOn(Schedulers.io());
+    }
+
     public Observable<ThreadInfo> getThreadInfo(String tid, String fid, int page, String pid) {
         Map<String, String> params = mRequestHelper.getHttpRequestMap();
         if (!TextUtils.isEmpty(tid)) {
@@ -220,6 +241,8 @@ public class ForumApi {
         params.put("pid", pid);
         return mForumService.addRuLight(params).subscribeOn(Schedulers.io());
     }
+
+
 
     /**
      * 获取所有论坛列表

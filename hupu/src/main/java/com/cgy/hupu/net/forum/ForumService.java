@@ -52,6 +52,10 @@ public interface ForumService {
     @POST("threads/threadCollectRemove")
     Observable<CollectData> delCollect(@Field("sign") String sign, @FieldMap Map<String, String> params);
 
+    @POST("threads/threadReport")
+    @FormUrlEncoded
+    Observable<BaseData> submitReports(@Field("sign") String sign, @FieldMap Map<String, String> params);
+
     @GET("threads/getThreadInfo")
     @Headers("Referer:http://bbs.mobileapi.hupu.com/1/7.0.8/threads/getThreadDetailInfoH5")
     Observable<ThreadInfo> getThreadInfo(@QueryMap Map<String, String> params);
@@ -73,4 +77,6 @@ public interface ForumService {
     @FormUrlEncoded
     @Headers("Referer:http://bbs.mobileapi.hupu.com/1/7.0.8/threads/getThreadDetailInfoH5")
     Observable<BaseData> addRuLight(@FieldMap Map<String, String> params);
+
+
 }
