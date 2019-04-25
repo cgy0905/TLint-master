@@ -4,30 +4,26 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.cgy.hupu.bean.BaseData;
 import com.cgy.hupu.bean.BaseError;
 import com.cgy.hupu.components.UserStorage;
 import com.cgy.hupu.components.okhttp.OkHttpHelper;
 import com.cgy.hupu.data.ContentRepository;
 import com.cgy.hupu.db.ImageCache;
 import com.cgy.hupu.db.ImageCacheDao;
-import com.cgy.hupu.db.ThreadInfo;
 import com.cgy.hupu.db.ThreadReply;
 import com.cgy.hupu.net.forum.ForumApi;
 import com.cgy.hupu.otto.UpdateContentPageEvent;
 import com.cgy.hupu.provider.LocalImageProvider;
-import com.cgy.hupu.utils.FileUtil;
 import com.cgy.hupu.utils.ToastUtil;
-import com.facebook.common.file.FileUtils;
 import com.squareup.otto.Bus;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -203,8 +199,8 @@ public class ContentPagerPresenter implements ContentPagerContract.Presenter{
     }
 
     @Override
-    public ContentPagerPresenter.HupuBridge getJavaScriptInterface() {
-        return null;
+    public HupuBridge getJavaScriptInterface() {
+        return new HupuBridge();
     }
 
     public class AddLight {
