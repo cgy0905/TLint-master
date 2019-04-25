@@ -16,6 +16,7 @@ public class Thread {
     private String forumName;
     private Integer lightReply;
     private Integer type;
+    private Forum forum;
 
     public Thread() {
     }
@@ -113,4 +114,11 @@ public class Thread {
         this.type = type;
     }
 
+    public Forum getForum() {
+        return forum;
+    }
+
+    public void setForum(Forum forum) {
+        this.forum = forum;
+    }
 }

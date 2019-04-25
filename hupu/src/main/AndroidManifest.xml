@@ -17,6 +17,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppThemeLight">
+        <activity android:name=".module.imagepreview.ImagePreviewActivity"></activity>
+        <activity android:name=".module.thread.list.ThreadListActivity" />
         <activity
             android:name=".module.splash.SplashActivity"
             android:label="@string/app_name"
@@ -45,7 +47,7 @@
         <activity android:name=".module.post.PostActivity" />
         <activity android:name=".module.browser.BrowserActivity" />
         <activity android:name=".module.content.ContentActivity" />
-        <activity android:name=".module.report.ReportActivity"></activity>
+        <activity android:name=".module.report.ReportActivity" />
     </application>
 
 </manifest>

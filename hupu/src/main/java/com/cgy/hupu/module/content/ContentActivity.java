@@ -331,4 +331,12 @@ public class ContentActivity extends BaseSwipeBackActivity
         super.onDestroy();
         mPresenter.detachView();
     }
+
+    public void setFloatingMenuVisibility(boolean show) {
+        if (show) {
+            floatingMenu.showMenu(true);
+        } else {
+            floatingMenu.hideMenu(true);
+        }
+    }
 }
