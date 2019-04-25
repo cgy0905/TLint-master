@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -62,6 +64,7 @@ public class ContentPagerPresenter implements ContentPagerContract.Presenter {
     private String tid;
     private int page;
 
+    @Inject
     public ContentPagerPresenter(ContentRepository contentRepository, ForumApi forumApi, Bus bus, ImageCacheDao imageCacheDao, OkHttpHelper okHttpHelper, UserStorage userStorage) {
         mContentRepository = contentRepository;
         mForumApi = forumApi;

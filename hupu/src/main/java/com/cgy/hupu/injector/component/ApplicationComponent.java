@@ -7,6 +7,7 @@ import com.cgy.hupu.MyApplication;
 import com.cgy.hupu.components.UserStorage;
 import com.cgy.hupu.components.okhttp.OkHttpHelper;
 import com.cgy.hupu.db.ForumDao;
+import com.cgy.hupu.db.ImageCacheDao;
 import com.cgy.hupu.db.ReadThreadDao;
 import com.cgy.hupu.db.ThreadDao;
 import com.cgy.hupu.db.ThreadInfoDao;
@@ -51,6 +52,8 @@ public interface ApplicationComponent {
     ThreadReplyDao getThreadReplyDao();
 
     ReadThreadDao getReadThreadDao();
+
+    ImageCacheDao getImageCacheDao();
 
     OkHttpHelper getOkHttpHelper();
 

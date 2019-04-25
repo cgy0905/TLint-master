@@ -38,14 +38,14 @@ public class ContentFragment extends BaseFragment implements ContentPagerContrac
         H5Callback, JockeyJsWebView.OnScrollChangedCallback {
 
     public static ContentFragment newInstance(String fid, String tid, String pid, int page) {
-        ContentFragment mFragment = new ContentFragment();
+        ContentFragment fragment = new ContentFragment();
         Bundle bundle = new Bundle();
         bundle.putString("fid", fid);
         bundle.putString("tid", tid);
         bundle.putString("pid", pid);
         bundle.putInt("page", page);
-        mFragment.setArguments(bundle);
-        return mFragment;
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
