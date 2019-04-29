@@ -5,23 +5,23 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 
-import com.cgy.hupu.bean.BaseData;
 import com.cgy.hupu.bean.BaseError;
 import com.cgy.hupu.components.UserStorage;
 import com.cgy.hupu.components.okhttp.OkHttpHelper;
 import com.cgy.hupu.data.ContentRepository;
 import com.cgy.hupu.db.ImageCache;
 import com.cgy.hupu.db.ImageCacheDao;
-import com.cgy.hupu.db.ThreadInfo;
 import com.cgy.hupu.db.ThreadReply;
 import com.cgy.hupu.net.forum.ForumApi;
 import com.cgy.hupu.otto.UpdateContentPageEvent;
 import com.cgy.hupu.provider.LocalImageProvider;
+<<<<<<< HEAD
+=======
 import com.cgy.hupu.utils.ConfigUtil;
 import com.cgy.hupu.utils.FileUtil;
 import com.cgy.hupu.utils.FormatUtil;
+>>>>>>> b32570b33fcbbc0cfc705504813600dfeb264d10
 import com.cgy.hupu.utils.ToastUtil;
-import com.facebook.common.file.FileUtils;
 import com.squareup.otto.Bus;
 
 import java.io.File;
@@ -35,8 +35,11 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+<<<<<<< HEAD
+=======
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+>>>>>>> b32570b33fcbbc0cfc705504813600dfeb264d10
 import rx.subscriptions.CompositeSubscription;
 
 /**
