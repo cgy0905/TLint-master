@@ -17,7 +17,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppThemeLight">
-        <activity android:name=".module.imagepreview.ImagePreviewActivity"></activity>
+        <activity android:name=".module.gallery.GalleryActivity"></activity>
+        <activity android:name=".module.imagepreview.ImagePreviewActivity" />
         <activity android:name=".module.thread.list.ThreadListActivity" />
         <activity
             android:name=".module.splash.SplashActivity"
