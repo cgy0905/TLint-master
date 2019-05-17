@@ -2,14 +2,19 @@ package com.cgy.hupu.net.forum;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.cgy.hupu.bean.AttendStatusData;
 import com.cgy.hupu.bean.BaseData;
 import com.cgy.hupu.bean.CollectData;
 import com.cgy.hupu.bean.MessageData;
+import com.cgy.hupu.bean.PermissionData;
+import com.cgy.hupu.bean.PostData;
 import com.cgy.hupu.bean.ThreadLightReplyData;
 import com.cgy.hupu.bean.ThreadListData;
 import com.cgy.hupu.bean.ThreadReplyData;
 import com.cgy.hupu.bean.ThreadSchemaInfo;
+import com.cgy.hupu.bean.UploadData;
 import com.cgy.hupu.components.UserStorage;
 import com.cgy.hupu.components.retrofit.FastJsonConverterFactory;
 import com.cgy.hupu.components.retrofit.RequestHelper;
@@ -17,10 +22,15 @@ import com.cgy.hupu.db.ThreadInfo;
 import com.cgy.hupu.db.ThreadReply;
 import com.cgy.hupu.utils.SettingPrefUtil;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import rx.Observable;
@@ -55,8 +65,9 @@ public class ForumApi {
 
     /**
      * 获取论坛消息列表
+     *
      * @param lastTid 上一条消息id
-     * @param page 页数
+     * @param page    页数
      * @return
      */
     public Observable<MessageData> getMessageList(String lastTid, int page) {
@@ -83,10 +94,11 @@ public class ForumApi {
 
     /**
      * 获取论坛帖子列表
-     * @param fid       论坛id，通过getForums接口获取
-     * @param lastTid   最后一篇帖子的id
-     * @param lastTamp  时间戳
-     * @param type      加载类型  1 按发帖时间排序  2 按回帖时间排序
+     *
+     * @param fid      论坛id，通过getForums接口获取
+     * @param lastTid  最后一篇帖子的id
+     * @param lastTamp 时间戳
+     * @param type     加载类型  1 按发帖时间排序  2 按回帖时间排序
      * @return
      */
     public Observable<ThreadListData> getThreadsList(String fid, String lastTid, String lastTamp, String type) {
@@ -111,10 +123,11 @@ public class ForumApi {
 
     /**
      * 获取帖子详情
-     * @param tid 帖子id
-     * @param fid 论坛id
+     *
+     * @param tid  帖子id
+     * @param fid  论坛id
      * @param page 页数
-     * @param pid 回复id
+     * @param pid  回复id
      * @return
      */
     public Observable<ThreadSchemaInfo> getThreadSchemaInfo(String tid, String fid, int page, String pid) {
@@ -137,6 +150,7 @@ public class ForumApi {
 
     /**
      * 收藏帖子
+     *
      * @param tid 帖子id
      * @return
      */
@@ -242,6 +256,147 @@ public class ForumApi {
         return mForumService.addRuLight(params).subscribeOn(Schedulers.io());
     }
 
+    /**
+     * 检查权限
+     *
+     * @param fid    论坛id
+     * @param tid    帖子id
+     * @param action threadPublish threadReply
+     * @return
+     */
+    public Observable<PermissionData> checkPermission(String fid, String tid, String action) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        if (!TextUtils.isEmpty(fid)) {
+            params.put("fid", fid);
+        }
+        if (!TextUtils.isEmpty(tid)) {
+            params.put("tid", tid);
+        }
+
+        if (!TextUtils.isEmpty(action)) {
+            params.put("action", action);
+        }
+        String sign = mRequestHelper.getRequestSign(params);
+
+        return mForumService.checkPermission(sign, params).subscribeOn(Schedulers.io());
+    }
+
+    /**
+     * 上传图片
+     * @param path  图片地址
+     * @return
+     */
+    public Observable<UploadData> upload(String path) {
+        File file = new File(path);
+        RequestBody requestFile = RequestBody.create(MediaType.parse(getContentType(path)), file);
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        String sign = mRequestHelper.getRequestSign(params);
+        params.put("sign", sign);
+        Map<String, RequestBody> requestBody = new HashMap<>();
+        for (String key :
+                params.keySet()) {
+            String value = params.get(key);
+            requestBody.put(key, RequestBody.create(MediaType.parse("multipart/form-data"), value));
+        }
+        MultipartBody.Part body = MultipartBody.Part.createFormData("files", file.getName(), requestFile);
+        return mForumService.upload(body, requestBody);
+    }
+
+    private String getContentType(String str) {
+        if (str == null) {
+            return null;
+        }
+        if (str.endsWith(".jpe") || str.endsWith(".JPE") || str.endsWith(".JPEG") ||
+                str.endsWith(".jpeg") || str.endsWith(".jpg") || str.endsWith(".JPG")) {
+            return "image/jpeg";
+        }
+        if (str.endsWith(".png") || str.endsWith(".PNG")) {
+            return "image/png";
+        }
+        if (str.endsWith(".gif")) {
+            return "image/gif";
+        }
+        return null;
+    }
+
+    /**
+     * 评论或者回复
+     * @param tid    帖子id
+     * @param fid    论坛id
+     * @param pid    回复id(评论时为空,回复某条回复时回复的id)
+     * @param content n内容
+     * @return
+     */
+    public Observable<PostData> addReplyByApp(String tid, String fid, String pid, String content) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("tid", tid);
+        params.put("content", content);
+        params.put("fid", fid);
+        if (!TextUtils.isEmpty(pid)) {
+            params.put("quotepid", pid);
+            params.put("boardpw", "");
+        }
+        String sign = mRequestHelper.getRequestSign(params);
+        params.put("sign", sign);
+        Log.d("groupApi", "gson.toJson(params):" + params);
+        return mForumService.addReplyByApp(params).subscribeOn(Schedulers.io());
+    }
+
+    /**
+     * 发新帖
+     * @param title     标题
+     * @param content   内容
+     * @param fid       论坛id
+     * @return
+     */
+    public Observable<PostData> addThread(String title, String content, String fid) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("title", title);
+        params.put("content", content);
+        params.put("fid", fid);
+        String sign = mRequestHelper.getRequestSign(params);
+        params.put("sign", sign);
+        return mForumService.addThread(params).subscribeOn(Schedulers.io());
+    }
+
+    /**
+     * 获取论坛关注动态
+     * @param fid 论坛id
+     * @return
+     */
+    public Observable<AttendStatusData> getAttentionStatus(String fid) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("fid", fid);
+        params.put("uid", mUserStorage.getUid());
+        String sign = mRequestHelper.getRequestSign(params);
+        return mForumService.getAttentionStatus(sign, params).subscribeOn(Schedulers.io());
+    }
+
+    /**
+     * 添加关注
+     * @param fid 论坛id
+     * @return
+     */
+    public Observable<AttendStatusData> addAttention(String fid) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("fid", fid);
+        params.put("uid", mUserStorage.getUid());
+        String sign = mRequestHelper.getRequestSign(params);
+        return mForumService.addAttention(sign, params).subscribeOn(Schedulers.io());
+    }
+
+    /**
+     * 取消关注
+     * @param fid   论坛id
+     * @return
+     */
+    public Observable<AttendStatusData> delAttention(String fid) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("fid", fid);
+        params.put("uid", mUserStorage.getUid());
+        String sign = mRequestHelper.getRequestSign(params);
+        return mForumService.delAttention(sign, params).subscribeOn(Schedulers.io());
+    }
 
 
     /**

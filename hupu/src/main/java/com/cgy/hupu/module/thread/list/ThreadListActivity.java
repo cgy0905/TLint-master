@@ -8,9 +8,13 @@ import android.os.Bundle;
 
 import com.cgy.hupu.R;
 import com.cgy.hupu.db.Thread;
+import com.cgy.hupu.injector.HasComponent;
 import com.cgy.hupu.module.BaseActivity;
+import com.cgy.hupu.module.BaseSwipeBackActivity;
 
-public class ThreadListActivity extends BaseActivity {
+import butterknife.ButterKnife;
+
+public class ThreadListActivity extends BaseSwipeBackActivity implements HasComponent<ThreadListComponent> {
 
     public static void startActivity(Context context, String fid) {
         Intent intent = new Intent(context, ThreadListActivity.class);
@@ -19,25 +23,29 @@ public class ThreadListActivity extends BaseActivity {
 
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_thread_list);
-    }
+    private ThreadListComponent mThreadListComponent;
 
     @Override
     public int initContentView() {
-        return 0;
+        return R.layout.base_content_empty;
     }
 
     @Override
     public void initInjector() {
-
+        String fid = getIntent().getStringExtra("fid");
+        mThreadListComponent = DaggerThreadListComponent.builder()
+                .applicationComponent(getApplicationComponent())
+                .activityModule(getActivityModule())
+                .threadListModule(new ThreadListModule(fid))
+                .build();
     }
 
     @Override
     public void initUiAndListener() {
-
+        ButterKnife.bind(this);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fl_content, new ThreadListFragment())
+                .commit();
     }
 
     @Override
@@ -47,6 +55,11 @@ public class ThreadListActivity extends BaseActivity {
 
     @Override
     protected boolean isApplyStatusBarColor() {
-        return false;
+        return true;
+    }
+
+    @Override
+    public ThreadListComponent getComponent() {
+        return mThreadListComponent;
     }
 }

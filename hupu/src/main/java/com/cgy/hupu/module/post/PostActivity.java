@@ -1,16 +1,17 @@
 package com.cgy.hupu.module.post;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.net.Uri;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
+import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.cgy.hupu.Constants;
 import com.cgy.hupu.R;
@@ -18,7 +19,10 @@ import com.cgy.hupu.bean.BaseError;
 import com.cgy.hupu.bean.Exam;
 import com.cgy.hupu.module.BaseSwipeBackActivity;
 import com.cgy.hupu.module.browser.BrowserActivity;
+import com.cgy.hupu.module.gallery.GalleryActivity;
+import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -27,7 +31,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
-import rx.functions.Action1;
 
 public class PostActivity extends BaseSwipeBackActivity implements PostContract.View {
 
@@ -245,6 +248,75 @@ public class PostActivity extends BaseSwipeBackActivity implements PostContract.
     }
 
     private void send() {
+        mPresenter.parse(selectImages);
+        String content = etContent.getText().toString();
+        if (type == Constants.TYPE_POST) {
+            String title = etSubject.getText().toString();
+            mPresenter.post(fid, content, title);
+        } else {
+            mPresenter.comment(tid, fid, pid, content);
+        }
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == GalleryActivity.REQUEST_IMAGE && resultCode == RESULT_OK) {
+            //获取返回的图片列表
+            ArrayList<String> path = data.getStringArrayListExtra(GalleryActivity.EXTRA_RESULT);
+            //处理你自己的逻辑
+            selectImages.clear();
+            selectImages.addAll(path);
+            updatePicsUI();
+        }
+    }
+
+    private void updatePicsUI() {
+        if (selectImages.isEmpty()) {
+            scrollView.setVisibility(View.GONE);
+            llPics.setVisibility(View.GONE);
+        } else {
+            scrollView.setVisibility(View.VISIBLE);
+            llPics.setVisibility(View.VISIBLE);
+            llPics.removeAllViews();
+            for (String path : selectImages) {
+                View itemView = View.inflate(this, R.layout.item_post_pic, null);
+                SimpleDraweeView ivPic = (SimpleDraweeView) itemView.findViewById(R.id.iv_pic);
+                itemView.setTag(path);
+                itemView.setOnClickListener(onPictureClickListener);
+                ivPic.setImageURI(Uri.fromFile(new File(path)));
+                llPics.addView(itemView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+            }
+        }
+    }
+    //暂时只支持删除,不支持预览
+    View.OnClickListener onPictureClickListener = v -> {
+        final String path = v.getTag().toString();
+
+        new AlertDialogWrapper.Builder(PostActivity.this).setMessage("确定删除图片")
+                .setNegativeButton("取消", null)
+                .setPositiveButton("确定", (dialog, which) -> {
+                    selectImages.remove(path);
+                    for (int i = 0; i < llPics.getChildCount(); i++) {
+                        View view = llPics.getChildAt(i);
+
+                        if (view.getTag().toString().equals(path)) {
+                            llPics.removeView(view);
+                            break;
+                        }
+                    }
+                    if (selectImages.isEmpty()) {
+                        scrollView.setVisibility(View.GONE);
+                    }
+                })
+                .show();
+
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.detachView();
     }
 }
