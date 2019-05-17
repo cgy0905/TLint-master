@@ -53,12 +53,12 @@ public interface ForumService {
     @POST("forums/attentionForumAdd")
     @FormUrlEncoded
     Observable<AttendStatusData> addAttention(
-            @Query("sign") String sign, @FieldMap Map<String, String> params);
+            @Field("sign") String sign, @FieldMap Map<String, String> params);
 
     @POST("forums/attentionForumRemove")
     @FormUrlEncoded
     Observable<AttendStatusData> delAttention(
-            @Query("sign") String sign, @FieldMap Map<String, String> params);
+            @Field("sign") String sign, @FieldMap Map<String, String> params);
 
     @GET("forums/getForumsAttendStatus")
     Observable<AttendStatusData> getAttentionStatus(

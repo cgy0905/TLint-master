@@ -147,11 +147,6 @@ public class ContentFragment extends BaseFragment implements ContentPagerContrac
     }
 
     @Override
-    public void showContentUi(String tid, String pid, int page) {
-
-    }
-
-    @Override
     public void showThreadListUi(String fid) {
         ThreadListActivity.startActivity(getActivity(), fid);
     }

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.cgy.hupu.bean.LoginData;
 import com.cgy.hupu.bean.PmData;
+import com.cgy.hupu.bean.SearchData;
 import com.cgy.hupu.bean.UserData;
 import com.cgy.hupu.components.retrofit.FastJsonConverterFactory;
 import com.cgy.hupu.components.retrofit.RequestHelper;
@@ -76,5 +77,16 @@ public class GameApi {
         String sign = mRequestHelper.getRequestSign(params);
         params.put("sign", sign);
         return mGameService.getUserInfo(params, mRequestHelper.getDeviceId());
+    }
+
+    public Observable<SearchData> search(String key, String fid, int page) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("keyword", key);
+        params.put("type", "posts");
+        params.put("fid", fid);
+        params.put("page", String.valueOf(page));
+        String sign = mRequestHelper.getRequestSign(params);
+        params.put("sign", sign);
+        return mGameService.search(params, mRequestHelper.getDeviceId()).subscribeOn(Schedulers.io());
     }
 }
