@@ -359,7 +359,10 @@ public class ForumApi {
         return mForumService.addThread(params).subscribeOn(Schedulers.io());
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 37bdc5341f020d3792a5a249b83879f2710dbe35
     /**
      * 获取论坛关注动态
      * @param fid 论坛id

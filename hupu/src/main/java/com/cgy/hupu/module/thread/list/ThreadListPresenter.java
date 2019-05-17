@@ -260,12 +260,7 @@ public class ThreadListPresenter implements ThreadListContract.Presenter{
             }
         }
 
-    @Override
-    public void onAttentionClick() {
-
-
     }
-
     @Override
     public void onPostClick() {
 
