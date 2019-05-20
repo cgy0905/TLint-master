@@ -29,9 +29,6 @@
                 android:background="@drawable/bg_banner_dialog"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
-                app:expandedTitleMarginBottom="160dp"
-                app:expandedTitleMarginEnd="64dp"
-                app:expandedTitleMarginStart="48dp"
                 app:layout_collapseMode="parallax" />
 
 
