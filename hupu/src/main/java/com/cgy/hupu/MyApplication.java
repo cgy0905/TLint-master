@@ -94,7 +94,7 @@ public class MyApplication extends Application {
                     }
                 })
                 .setMainDiskCacheConfig(
-                        DiskCacheConfig.newBuilder(this).setMaxCacheSize(MAX_MEMORY_CACHE_SIZE).build())
+                        DiskCacheConfig.newBuilder(this).setMaxCacheSize(MAX_DISK_CACHE_SIZE).build())
                 .setDownsampleEnabled(true)
                 .build();
 

@@ -19,6 +19,7 @@ import com.cgy.hupu.injector.module.DBModule;
 import com.cgy.hupu.module.BaseActivity;
 import com.cgy.hupu.net.forum.ForumApi;
 import com.cgy.hupu.net.game.GameApi;
+import com.cgy.hupu.widget.HuPuWebView;
 import com.squareup.otto.Bus;
 
 import javax.inject.Singleton;
@@ -64,5 +65,7 @@ public interface ApplicationComponent {
     void inject(MyApplication myApplication);
 
     void inject(BaseActivity baseActivity);
+
+    void inject(HuPuWebView huPuWebView);
 
 }

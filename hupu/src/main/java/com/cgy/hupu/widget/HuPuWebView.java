@@ -1,4 +1,4 @@
-package com.gzsll.hupu.widget;
+package com.cgy.hupu.widget;
 
 import android.content.Context;
 import android.net.Uri;
@@ -13,21 +13,21 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.gzsll.hupu.AppManager;
-import com.gzsll.hupu.Constants;
-import com.gzsll.hupu.MyApplication;
-import com.gzsll.hupu.components.retrofit.RequestHelper;
-import com.gzsll.hupu.components.storage.UserStorage;
-import com.gzsll.hupu.ui.browser.BrowserActivity;
-import com.gzsll.hupu.ui.content.ContentActivity;
-import com.gzsll.hupu.ui.imagepreview.ImagePreviewActivity;
-import com.gzsll.hupu.ui.login.LoginActivity;
-import com.gzsll.hupu.ui.post.PostActivity;
-import com.gzsll.hupu.ui.report.ReportActivity;
-import com.gzsll.hupu.ui.thread.list.ThreadListActivity;
-import com.gzsll.hupu.ui.userprofile.UserProfileActivity;
-import com.gzsll.hupu.util.StringUtil;
-import com.gzsll.hupu.util.ToastUtil;
+import com.cgy.hupu.AppManager;
+import com.cgy.hupu.Constants;
+import com.cgy.hupu.MyApplication;
+import com.cgy.hupu.components.UserStorage;
+import com.cgy.hupu.components.retrofit.RequestHelper;
+import com.cgy.hupu.module.browser.BrowserActivity;
+import com.cgy.hupu.module.content.ContentActivity;
+import com.cgy.hupu.module.imagepreview.ImagePreviewActivity;
+import com.cgy.hupu.module.login.LoginActivity;
+import com.cgy.hupu.module.post.PostActivity;
+import com.cgy.hupu.module.report.ReportActivity;
+import com.cgy.hupu.module.thread.list.ThreadListActivity;
+import com.cgy.hupu.module.userprofile.UserProfileActivity;
+import com.cgy.hupu.utils.StringUtil;
+import com.cgy.hupu.utils.ToastUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,10 +41,11 @@ import java.util.Map;
 import javax.inject.Inject;
 
 /**
- * Created by sll on 2015/12/10.
+ * @author cgy
+ * @desctiption
+ * @date 2019/5/17 17:49
  */
 public class HuPuWebView extends WebView {
-
 
     private String basicUA;
     private Map<String, String> header;
@@ -53,6 +54,7 @@ public class HuPuWebView extends WebView {
     UserStorage mUserStorage;
     @Inject
     RequestHelper mRequestHelper;
+
 
     public HuPuWebView(Context context) {
         super(context);
@@ -68,26 +70,30 @@ public class HuPuWebView extends WebView {
         this.callback = callback;
     }
 
-
     private void init() {
         ((MyApplication) getContext().getApplicationContext()).getApplicationComponent().inject(this);
         WebSettings settings = getSettings();
-        settings.setBuiltInZoomControls(false);
-        settings.setSupportZoom(false);
-        settings.setJavaScriptEnabled(true);
-        settings.setAllowFileAccess(true);
-        settings.setSupportMultipleWindows(false);
-        settings.setJavaScriptCanOpenWindowsAutomatically(true);
-        settings.setDomStorageEnabled(true);
-        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        settings.setSupportZoom(false); //支持缩放 默认为true 是下面api的前提
+        settings.setBuiltInZoomControls(false);//设置内置的缩放控件 若为false 则该WebView不可缩放
+        settings.setJavaScriptEnabled(true);//支持与js交互
+        settings.setAllowFileAccess(true);//设置可以访问文件
+        settings.setSupportMultipleWindows(false);//多窗口
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);    //支持通过js打开新窗口
+        settings.setDomStorageEnabled(true);    // 开启 DOM storage API 功能
+        //缓存模式如下：
+        //LOAD_CACHE_ONLY: 不使用网络，只读取本地缓存数据
+        //LOAD_DEFAULT: （默认）根据cache-control决定是否从网络上取数据。
+        //LOAD_NO_CACHE: 不使用缓存，只从网络获取数据.
+        //LOAD_CACHE_ELSE_NETWORK，只要本地有，无论是否过期，或者no-cache，都使用缓存中的数据。
+
+        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//关闭WebView中缓存
         settings.setUseWideViewPort(true);
-        if (Build.VERSION.SDK_INT > 6) {
-            settings.setAppCacheEnabled(true);
-            settings.setLoadWithOverviewMode(true);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ECLAIR_0_1) {
+            settings.setAppCacheEnabled(true);//开启 Application Caches 功能
+            settings.setLoadWithOverviewMode(true);//将图片调整到适合WebView的大小
         }
-        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
         String path = getContext().getFilesDir().getPath();
-        settings.setGeolocationEnabled(true);
+        settings.setGeolocationEnabled(true);//启用H5的地理定位服务
         settings.setGeolocationDatabasePath(path);
         this.basicUA = settings.getUserAgentString() + " kanqiu/7.05.6303/7059";
         setBackgroundColor(0);
@@ -107,6 +113,7 @@ public class HuPuWebView extends WebView {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     private void initWebViewClient() {
@@ -164,6 +171,7 @@ public class HuPuWebView extends WebView {
                     e.printStackTrace();
                 }
             }
+
         }
     }
 
@@ -221,11 +229,10 @@ public class HuPuWebView extends WebView {
                 JSONObject extra = data.getJSONObject("extra");
                 String tid = extra.getString("tid");
                 long pid = extra.getLong("pid");
-                String userName = extra.getString("username");
+                String username = extra.getString("username");
                 String content = extra.getString("content");
                 if (open) {
-                    PostActivity.startActivity(getContext(), Constants.TYPE_REPLY, "", tid,
-                            String.valueOf(pid), content);
+                    PostActivity.startActivity(getContext(), Constants.TYPE_REPLY, "", tid, String.valueOf(pid), content);
                 }
                 break;
             case "hupu.album.view":
@@ -260,7 +267,7 @@ public class HuPuWebView extends WebView {
 
     private void setUA(int i) {
         if (this.basicUA != null) {
-            getSettings().setUserAgentString(this.basicUA + " isp/" + i + " network/" + i);
+            getSettings().setUserAgentString(this.basicUA + "isp/" + i + " network/" + i);
         }
     }
 
@@ -273,10 +280,10 @@ public class HuPuWebView extends WebView {
         super.loadUrl(url, header);
     }
 
+
     private HuPuWebViewCallback callback;
 
     public interface HuPuWebViewCallback {
-
         void onFinish();
 
         void onUpdatePager(int page, int total);
@@ -284,10 +291,10 @@ public class HuPuWebView extends WebView {
         void onError();
     }
 
-    private OnScrollChangedCallback mOnScrollChangedCallback;
+    private JockeyJsWebView.OnScrollChangedCallback mOnScrollChangedCallback;
 
     @Override
-    protected void onScrollChanged(final int l, final int t, final int oldl, final int oldt) {
+    protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
 
         if (mOnScrollChangedCallback != null) {
@@ -295,12 +302,8 @@ public class HuPuWebView extends WebView {
         }
     }
 
-    public OnScrollChangedCallback getOnScrollChangedCallback() {
+    public JockeyJsWebView.OnScrollChangedCallback getOnScrollChangedCallback() {
         return mOnScrollChangedCallback;
-    }
-
-    public void setOnScrollChangedCallback(final OnScrollChangedCallback onScrollChangedCallback) {
-        mOnScrollChangedCallback = onScrollChangedCallback;
     }
 
     /**
