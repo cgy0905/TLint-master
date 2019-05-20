@@ -11,7 +11,7 @@
             android:enabled="true"
             android:key="pAutoUpdate"
             android:title="@string/settings_auto_update" />
-        <com.gzsll.hupu.widget.WrapperListPreference
+        <com.cgy.hupu.widget.WrapperListPreference
             android:defaultValue="0"
             android:dialogTitle="@string/settings_dt_swipeback_edgemode"
             android:entries="@array/swipeBackEdgeMode"
@@ -19,27 +19,18 @@
             android:key="pSwipeBackEdgeMode"
             android:title="@string/settings_swipeback_edgemode" />
 
-        <!--   <com.gzsll.hupu.widget.WrapperListPreference
-               android:defaultValue="0"
-               android:dialogTitle="离线帖子篇数"
-               android:entries="@array/offlineCount"
-               android:entryValues="@array/prefValues"
-               android:key="pOfflineCount"
-               android:title="离线帖子篇数" />-->
-
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/category_read">
-        <com.gzsll.hupu.widget.WrapperListPreference
+        <com.cgy.hupu.widget.WrapperListPreference
             android:defaultValue="0"
             android:dialogTitle="@string/settings_thread_sort"
             android:entries="@array/sortType"
             android:entryValues="@array/prefValues"
             android:key="pThreadSort"
-            android:title="@string/settings_thread_sort" />
+            android:title="@string/settings_thread_sort"/>
 
-
-        <com.gzsll.hupu.widget.WrapperListPreference
+        <com.cgy.hupu.widget.WrapperListPreference
             android:defaultValue="4"
             android:dialogTitle="@string/settings_text_size"
             android:entries="@array/textSizeNum"
@@ -47,26 +38,12 @@
             android:key="pTextSize"
             android:title="@string/settings_text_size" />
 
-        <!--        <CheckBoxPreference
-                    android:defaultValue="false"
-                    android:key="pSingleLine"
-                    android:summary="@string/settings_single_line_summary"
-                    android:title="@string/settings_single_line" />-->
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="pLoadPic"
             android:summary="@string/settings_load_pic_summary"
             android:title="@string/settings_load_pic" />
-
-
-        <!--<CheckBoxPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="pLoadOriginPic"-->
-        <!--android:summary="@string/settings_load_ori_pic_summary"-->
-        <!--android:title="@string/settings_load_ori_pic" />-->
-
     </PreferenceCategory>
-
 
     <PreferenceCategory android:title="@string/settings_notification_settings">
         <CheckBoxPreference

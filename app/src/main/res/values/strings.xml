@@ -55,7 +55,7 @@
         <!--<item>全部</item>-->
     </string-array>
 
-    <string-array name="txtSizeNum">
+    <string-array name="textSizeNum">
         <item>12</item>
         <item>13</item>
         <item>14</item>

@@ -2,31 +2,47 @@ package com.cgy.hupu.module.setting;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 
 import com.cgy.hupu.R;
-import com.cgy.hupu.module.BaseActivity;
+import com.cgy.hupu.injector.HasComponent;
+import com.cgy.hupu.module.BaseSwipeBackActivity;
 
-public class SettingActivity extends BaseActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class SettingActivity extends BaseSwipeBackActivity implements HasComponent<SettingComponent> {
 
     public static void startActivity(Context context) {
         Intent intent = new Intent(context, SettingActivity.class);
         context.startActivity(intent);
     }
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    private SettingComponent mSettingComponent;
+
     @Override
     public int initContentView() {
-        return 0;
+        return R.layout.base_content_toolbar_layout;
     }
 
     @Override
     public void initInjector() {
-
+        mSettingComponent = DaggerSettingComponent.builder()
+                .applicationComponent(getApplicationComponent())
+                .activityModule(getActivityModule())
+                .build();
     }
 
     @Override
     public void initUiAndListener() {
-
+        ButterKnife.bind(this);
+        initToolBar(toolbar);
+        setTitle("设置");
+        getFragmentManager().beginTransaction().replace(R.id.fl_content, new SettingFragment()).commit();
     }
 
     @Override
@@ -36,6 +52,12 @@ public class SettingActivity extends BaseActivity {
 
     @Override
     protected boolean isApplyStatusBarColor() {
-        return false;
+        return true;
     }
+
+    @Override
+    public SettingComponent getComponent() {
+        return mSettingComponent;
+    }
+
 }

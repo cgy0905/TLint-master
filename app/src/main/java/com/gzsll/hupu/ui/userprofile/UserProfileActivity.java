@@ -53,8 +53,8 @@ public class UserProfileActivity extends BaseSwipeBackActivity
     AppBarLayout appbar;
     @BindView(R.id.viewPager)
     ViewPager viewPager;
-    @BindView(R.id.maincontent)
-    CoordinatorLayout maincontent;
+    @BindView(R.id.mainContent)
+    CoordinatorLayout mainContent;
     @BindView(R.id.ivGender)
     ImageView ivGender;
     @BindView(R.id.tvRegisterTime)
