@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.cgy.hupu.bean.LoginData;
 import com.cgy.hupu.bean.PmData;
 import com.cgy.hupu.bean.SearchData;
+import com.cgy.hupu.bean.ThreadListData;
 import com.cgy.hupu.bean.UserData;
 import com.cgy.hupu.components.retrofit.FastJsonConverterFactory;
 import com.cgy.hupu.components.retrofit.RequestHelper;
@@ -16,6 +17,7 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import rx.Observable;
+import rx.Subscription;
 import rx.schedulers.Schedulers;
 
 /**
@@ -79,6 +81,13 @@ public class GameApi {
         return mGameService.getUserInfo(params, mRequestHelper.getDeviceId());
     }
 
+    /**
+     * type暂时写死,只搜索论坛
+     * @param key   搜索词
+     * @param fid   论坛fid
+     * @param page  页数
+     * @return
+     */
     public Observable<SearchData> search(String key, String fid, int page) {
         Map<String, String> params = mRequestHelper.getHttpRequestMap();
         params.put("keyword", key);
@@ -88,5 +97,17 @@ public class GameApi {
         String sign = mRequestHelper.getRequestSign(params);
         params.put("sign", sign);
         return mGameService.search(params, mRequestHelper.getDeviceId()).subscribeOn(Schedulers.io());
+    }
+
+    /**
+     * 获取收藏帖子
+     * @param page  页数
+     * @return
+     */
+    public Observable<ThreadListData> getCollectList(int page) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("page", String.valueOf(page));
+        String sign = mRequestHelper.getRequestSign(params);
+        return mGameService.getCollectList(sign, params).subscribeOn(Schedulers.io());
     }
 }
