@@ -1,13 +1,15 @@
-package com.gzsll.hupu.ui.pmlist;
+package com.cgy.hupu.module.pmlist;
 
-import com.gzsll.hupu.bean.Pm;
-import com.gzsll.hupu.ui.BasePresenter;
-import com.gzsll.hupu.ui.BaseView;
+import com.cgy.hupu.bean.Pm;
+import com.cgy.hupu.module.BasePresenter;
+import com.cgy.hupu.module.BaseView;
 
 import java.util.List;
 
 /**
- * Created by sll on 2016/5/11.
+ * @author cgy
+ * @desctiption
+ * @date 2019/5/21 17:01
  */
 public interface PmListContract {
 

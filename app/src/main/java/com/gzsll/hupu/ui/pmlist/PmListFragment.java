@@ -91,8 +91,8 @@ public class PmListFragment extends BaseFragment
     }
 
     @Override
-    public void onLoadCompleted(boolean haMore) {
-        recyclerView.onLoadCompleted(haMore);
+    public void onLoadCompleted(boolean hasMore) {
+        recyclerView.onLoadCompleted(hasMore);
     }
 
     @Override

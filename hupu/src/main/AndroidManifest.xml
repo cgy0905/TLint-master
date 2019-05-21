@@ -107,6 +107,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight" />
 
+        <activity android:name=".module.pmdetail.PmDetailActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeLight"
+            android:windowSoftInputMode="adjustResize"/>
+
 
         <service
             android:name=".service.MessageService"
