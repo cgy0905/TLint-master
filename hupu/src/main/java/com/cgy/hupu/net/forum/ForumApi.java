@@ -7,7 +7,9 @@ import android.util.Log;
 import com.cgy.hupu.bean.AttendStatusData;
 import com.cgy.hupu.bean.BaseData;
 import com.cgy.hupu.bean.CollectData;
+import com.cgy.hupu.bean.ForumsData;
 import com.cgy.hupu.bean.MessageData;
+import com.cgy.hupu.bean.MyForumsData;
 import com.cgy.hupu.bean.PermissionData;
 import com.cgy.hupu.bean.PostData;
 import com.cgy.hupu.bean.ThreadLightReplyData;
@@ -398,24 +400,26 @@ public class ForumApi {
         return mForumService.delAttention(sign, params).subscribeOn(Schedulers.io());
     }
 
+    /**
+     * 获取用户收藏的论坛列表
+     */
+    public Observable<MyForumsData> getMyForums() {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        String sign = mRequestHelper.getRequestSign(params);
+        return mForumService.getMyForums(sign, params).subscribeOn(Schedulers.io());
+    }
+
 
     /**
      * 获取所有论坛列表
      */
-//    public Observable<ForumsData> getForums() {
-//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
-//        String sign = mRequestHelper.getRequestSign(params);
-//        return mForumService.getForums(sign, params).subscribeOn(Schedulers.io());
-//    }
+    public Observable<ForumsData> getForums() {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        String sign = mRequestHelper.getRequestSign(params);
+        return mForumService.getForums(sign, params).subscribeOn(Schedulers.io());
+    }
 //
-//    /**
-//     * 获取用户收藏的论坛列表
-//     */
-//    public Observable<MyForumsData> getMyForums() {
-//        Map<String, String> params = mRequestHelper.getHttpRequestMap();
-//        String sign = mRequestHelper.getRequestSign(params);
-//        return mForumService.getMyForums(sign, params).subscribeOn(Schedulers.io());
-//    }
+//
 //
 //    /**
 //     * 获取论坛帖子列表

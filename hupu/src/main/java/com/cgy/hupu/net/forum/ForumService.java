@@ -3,7 +3,9 @@ package com.cgy.hupu.net.forum;
 import com.cgy.hupu.bean.AttendStatusData;
 import com.cgy.hupu.bean.BaseData;
 import com.cgy.hupu.bean.CollectData;
+import com.cgy.hupu.bean.ForumsData;
 import com.cgy.hupu.bean.MessageData;
+import com.cgy.hupu.bean.MyForumsData;
 import com.cgy.hupu.bean.PermissionData;
 import com.cgy.hupu.bean.PostData;
 import com.cgy.hupu.bean.ThreadLightReplyData;
@@ -112,4 +114,10 @@ public interface ForumService {
     @FormUrlEncoded
     @POST("forums/attentionForumRemove")
     Observable<AttendStatusData> delAttention(@Field("sign") String sign, @FieldMap Map<String, String> params);
+
+    @GET("forums/getUserForumsList")
+    Observable<MyForumsData> getMyForums(@Query("sign") String sign, @QueryMap Map<String, String> params);
+
+    @GET("forums/getForums")
+    Observable<ForumsData> getForums(@Query("sign") String sign, @QueryMap Map<String, String> params);
 }

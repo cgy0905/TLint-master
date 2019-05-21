@@ -5,7 +5,7 @@ import android.app.Service;
 import com.gzsll.hupu.injector.PerService;
 import com.gzsll.hupu.injector.module.ServiceModule;
 import com.gzsll.hupu.service.MessageService;
-import com.gzsll.hupu.service.OffLineService;
+import com.gzsll.hupu.service.OfflineService;
 
 import dagger.Component;
 
@@ -20,5 +20,5 @@ public interface ServiceComponent {
 
     void inject(MessageService messageService);
 
-    void inject(OffLineService offLineService);
+    void inject(OfflineService offLineService);
 }

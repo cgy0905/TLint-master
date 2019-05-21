@@ -8,7 +8,7 @@ import com.gzsll.hupu.data.ForumRepository;
 import com.gzsll.hupu.db.Forum;
 import com.gzsll.hupu.injector.PerActivity;
 import com.gzsll.hupu.otto.DelForumAttentionEvent;
-import com.gzsll.hupu.service.OffLineService;
+import com.gzsll.hupu.service.OfflineService;
 import com.gzsll.hupu.util.ToastUtil;
 import com.squareup.otto.Bus;
 
@@ -85,11 +85,11 @@ public class ForumListPresenter implements ForumListContract.Presenter {
 
     @Override
     public void onForumOfflineClick(Forum forum) {
-        Intent intent = new Intent(mContext, OffLineService.class);
+        Intent intent = new Intent(mContext, OfflineService.class);
         ArrayList<Forum> forums = new ArrayList<>();
         forums.add(forum);
-        intent.putExtra(OffLineService.EXTRA_FORUMS, forums);
-        intent.setAction(OffLineService.START_DOWNLOAD);
+        intent.putExtra(OfflineService.EXTRA_FORUMS, forums);
+        intent.setAction(OfflineService.START_DOWNLOAD);
         mContext.startService(intent);
     }
 

@@ -63,7 +63,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by sll on 2016/5/30.
  */
-public class OffLineService extends Service {
+public class OfflineService extends Service {
     public static final String START_DOWNLOAD = BuildConfig.APPLICATION_ID + ".action.START_DOWNLOAD";
     public static final String EXTRA_FORUMS = "forums";
 
@@ -171,7 +171,7 @@ public class OffLineService extends Service {
             return;
         }
         Subscription mSubscription = mForumApi.getThreadsList(fid, lastTid, lastStm,
-                SettingPrefUtil.getThreadSort(OffLineService.this))
+                SettingPrefUtil.getThreadSort(OfflineService.this))
                 .doOnNext(new Action1<ThreadListData>() {
                     @Override
                     public void call(ThreadListData threadListData) {
