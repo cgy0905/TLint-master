@@ -1,4 +1,4 @@
-package com.gzsll.hupu.ui.gallery;
+package com.cgy.hupu.module.gallery;
 
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -8,9 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cgy.hupu.R;
+import com.cgy.hupu.bean.Folder;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.gzsll.hupu.R;
-import com.gzsll.hupu.bean.Folder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,7 +22,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by sll on 2016/3/9.
+ * @author cgy
+ * @desctiption
+ * @date 2019/5/22 17:25
  */
 public class FolderAdapter extends BaseAdapter {
 
@@ -31,6 +33,7 @@ public class FolderAdapter extends BaseAdapter {
 
     @Inject
     public FolderAdapter() {
+
     }
 
     public void bind(List<Folder> folders) {
@@ -39,7 +42,8 @@ public class FolderAdapter extends BaseAdapter {
     }
 
     public void setSelectIndex(int i) {
-        if (lastSelected == i) return;
+        if (lastSelected == i)
+            return;
         lastSelected = i;
         notifyDataSetChanged();
     }
@@ -51,8 +55,8 @@ public class FolderAdapter extends BaseAdapter {
     private int getTotalImageSize(List<Folder> folders) {
         int result = 0;
         if (folders != null && folders.size() > 0) {
-            for (Folder f : folders) {
-                result += f.images.size();
+            for (Folder folder : folders) {
+                result += folder.images.size();
             }
         }
         return result;
@@ -64,7 +68,7 @@ public class FolderAdapter extends BaseAdapter {
     }
 
     @Override
-    public Folder getItem(int position) {
+    public Object getItem(int position) {
         return folders.get(position);
     }
 
@@ -84,7 +88,6 @@ public class FolderAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-
         Folder folder = folders.get(position);
         if (position == 0) {
             holder.tvName.setText("所有图片");
@@ -101,15 +104,16 @@ public class FolderAdapter extends BaseAdapter {
         return convertView;
     }
 
+
     static class ViewHolder {
-        @BindView(R.id.ivCover)
+        @BindView(R.id.iv_cover)
         SimpleDraweeView ivCover;
-        @BindView(R.id.tvName)
-        TextView tvName;
-        @BindView(R.id.tvSize)
-        TextView tvSize;
-        @BindView(R.id.ivIndicator)
+        @BindView(R.id.iv_indicator)
         ImageView ivIndicator;
+        @BindView(R.id.tv_name)
+        TextView tvName;
+        @BindView(R.id.tv_size)
+        TextView tvSize;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

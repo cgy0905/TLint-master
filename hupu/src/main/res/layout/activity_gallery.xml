@@ -1,9 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".module.gallery.GalleryActivity">
+    android:background="#ffffff"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
-</android.support.constraint.ConstraintLayout>
+    <include layout="@layout/base_toolbar_layout" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rl_select"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:horizontalSpacing="4dp"
+        android:numColumns="4"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="4dp"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_select"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="?widgetBackground">
+
+        <View
+            style="@style/AppWidget.DeepLine"
+            android:layout_alignParentTop="true" />
+
+        <RelativeLayout
+            android:id="@+id/rl_camera"
+            android:layout_width="50dp"
+            android:layout_height="50dp">
+
+            <ImageView
+                android:id="@+id/iv_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ap_gallery_camera"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_folder"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="最近照片"
+            android:textColor="#5f646e"/>
+
+        <Button
+            android:id="@+id/btn_commit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/action_btn"
+            android:minHeight="1dp"
+            android:minWidth="1dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:text="完成"
+            android:textColor="@color/base_text_white"
+            android:textSize="14sp"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>
