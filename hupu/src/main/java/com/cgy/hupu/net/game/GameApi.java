@@ -2,9 +2,14 @@ package com.cgy.hupu.net.game;
 
 import android.text.TextUtils;
 
+import com.cgy.hupu.bean.BaseData;
 import com.cgy.hupu.bean.LoginData;
 import com.cgy.hupu.bean.PmData;
+import com.cgy.hupu.bean.PmDetailData;
+import com.cgy.hupu.bean.PmSettingData;
+import com.cgy.hupu.bean.Search;
 import com.cgy.hupu.bean.SearchData;
+import com.cgy.hupu.bean.SendPmData;
 import com.cgy.hupu.bean.ThreadListData;
 import com.cgy.hupu.bean.UserData;
 import com.cgy.hupu.components.retrofit.FastJsonConverterFactory;
@@ -12,6 +17,7 @@ import com.cgy.hupu.components.retrofit.RequestHelper;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -109,5 +115,52 @@ public class GameApi {
         params.put("page", String.valueOf(page));
         String sign = mRequestHelper.getRequestSign(params);
         return mGameService.getCollectList(sign, params).subscribeOn(Schedulers.io());
+    }
+
+    public Observable<PmSettingData> queryPmSetting(String uid) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("other_puid", uid);
+        String sign = mRequestHelper.getRequestSign(params);
+        params.put("sign", sign);
+        return mGameService.queryPmSetting(params, mRequestHelper.getDeviceId()).subscribeOn(Schedulers.io());
+    }
+
+    public Observable<PmDetailData> queryPmDetail(String mid, String uid) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        if (!TextUtils.isEmpty(mid)) {
+            params.put("pmid", mid);
+        }
+        params.put("from_puid", uid);
+        String sign = mRequestHelper.getRequestSign(params);
+        params.put("sign", sign);
+        return mGameService.queryPmDetail(params, mRequestHelper.getDeviceId()).subscribeOn(Schedulers.io());
+    }
+
+    public Observable<SendPmData> pm(String content, String uid) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        if (!TextUtils.isEmpty(content)) {
+            params.put("content", content);
+        }
+        params.put("receiver_puid", uid);
+        String sign = mRequestHelper.getRequestSign(params);
+        params.put("sign", sign);
+        return mGameService.pm(params, mRequestHelper.getDeviceId()).subscribeOn(Schedulers.io());
+    }
+
+    public Observable<BaseData> cleanPm(String uid) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("clear_puid", uid);
+        String sign = mRequestHelper.getRequestSign(params);
+        params.put("sign", sign);
+        return mGameService.clearPm(params, mRequestHelper.getDeviceId()).observeOn(Schedulers.io());
+    }
+
+    public Observable<BaseData> blockPm(String uid, int block) {
+        Map<String, String> params = mRequestHelper.getHttpRequestMap();
+        params.put("block_puid", uid);
+        params.put("is_block", String.valueOf(block));
+        String sign = mRequestHelper.getRequestSign(params);
+        params.put("sign", sign);
+        return mGameService.blockPm(params, mRequestHelper.getDeviceId()).subscribeOn(Schedulers.io());
     }
 }

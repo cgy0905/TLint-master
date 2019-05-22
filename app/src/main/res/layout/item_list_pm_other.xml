@@ -3,6 +3,7 @@
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:padding="10dp">
 
     <TextView
@@ -64,9 +65,10 @@
                 android:layout_height="15dp"
                 android:layout_gravity="center_vertical"
                 android:adjustViewBounds="true"
-                android:contentDescription="Meaasge Image"
+                android:contentDescription="Message Image"
                 android:src="@drawable/ap_info_warn"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:visibility="visible"/>
 
             <ProgressBar
                 android:id="@+id/pbReply"
@@ -74,7 +76,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:visibility="visible"/>
         </LinearLayout>
     </LinearLayout>
 
