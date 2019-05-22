@@ -2,6 +2,7 @@ package com.cgy.hupu.module.userprofile;
 
 import android.support.annotation.NonNull;
 
+import com.cgy.hupu.injector.PerActivity;
 import com.cgy.hupu.net.game.GameApi;
 
 import javax.inject.Inject;
@@ -14,6 +15,7 @@ import rx.android.schedulers.AndroidSchedulers;
  * @desctiption
  * @date 2019/5/20 13:58
  */
+@PerActivity
 public class UserProfilePresenter implements UserProfileContract.Presenter{
 
     private GameApi mGameApi;

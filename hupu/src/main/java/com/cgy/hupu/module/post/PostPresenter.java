@@ -7,6 +7,7 @@ import com.cgy.hupu.Constants;
 import com.cgy.hupu.Logger;
 import com.cgy.hupu.bean.UploadData;
 import com.cgy.hupu.bean.UploadInfo;
+import com.cgy.hupu.injector.PerActivity;
 import com.cgy.hupu.net.forum.ForumApi;
 import com.cgy.hupu.utils.SettingPrefUtil;
 import com.cgy.hupu.utils.ToastUtil;
@@ -26,6 +27,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by cgy on 2019/4/29 15:47 .
  */
+@PerActivity
 public class PostPresenter implements PostContract.Presenter {
 
     private ForumApi mForumApi;

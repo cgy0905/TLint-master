@@ -11,6 +11,7 @@ import com.cgy.hupu.bean.UserResult;
 import com.cgy.hupu.components.UserStorage;
 import com.cgy.hupu.db.User;
 import com.cgy.hupu.db.UserDao;
+import com.cgy.hupu.injector.PerActivity;
 import com.cgy.hupu.net.game.GameApi;
 import com.cgy.hupu.otto.LoginSuccessEvent;
 import com.cgy.hupu.utils.SecurityUtil;
@@ -31,6 +32,7 @@ import rx.functions.Func1;
 /**
  * Created by cgy on 2019/1/17 上午 11:38.
  */
+@PerActivity
 public class LoginPresenter implements LoginContract.Presenter{
 
     private GameApi mGameApi;

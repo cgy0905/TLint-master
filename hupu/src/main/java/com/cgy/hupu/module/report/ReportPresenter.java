@@ -3,6 +3,7 @@ package com.cgy.hupu.module.report;
 import android.support.annotation.NonNull;
 
 import com.cgy.hupu.bean.BaseData;
+import com.cgy.hupu.injector.PerActivity;
 import com.cgy.hupu.net.forum.ForumApi;
 import com.cgy.hupu.utils.ToastUtil;
 
@@ -15,6 +16,7 @@ import rx.functions.Action1;
 /**
  * Created by cgy on 2019/4/25.
  */
+@PerActivity
 public class ReportPresenter  implements ReportContract.Presenter{
 
     private ForumApi mForumApi;

@@ -41,8 +41,8 @@ import butterknife.OnClick;
 public class ContentActivity extends BaseSwipeBackActivity
             implements ContentContract.View, ViewPager.OnPageChangeListener, PagePicker.OnJumpListener, HasComponent<ContentComponent> {
 
-    @BindView(R.id.viewpager)
-    VerticalViewPager viewpager;
+    @BindView(R.id.viewPager)
+    VerticalViewPager viewPager;
     @BindView(R.id.progress_view)
     ProgressBarCircularIndeterminate progressBar;
     @BindView(R.id.tv_loading)
@@ -124,7 +124,7 @@ public class ContentActivity extends BaseSwipeBackActivity
         pid = getIntent().getStringExtra("pid");
         initPicker();
         initFloatingButton();
-        viewpager.setOnPageChangeListener(this);
+        viewPager.setOnPageChangeListener(this);
         progressBar.setBackgroundColor(ResourceUtil.getThemeColor(this));
         mPresenter.onThreadInfoReceive(tid, fid, pid, page);
     }
@@ -155,22 +155,22 @@ public class ContentActivity extends BaseSwipeBackActivity
     @Override
     public void showLoading() {
         rlProgress.setVisibility(View.VISIBLE);
-        viewpager.setVisibility(View.GONE);
+        viewPager.setVisibility(View.GONE);
         rlError.setVisibility(View.GONE);
     }
 
     @Override
     public void hideLoading() {
         rlProgress.setVisibility(View.GONE);
-        viewpager.setVisibility(View.VISIBLE);
+        viewPager.setVisibility(View.VISIBLE);
         rlError.setVisibility(View.GONE);
     }
 
     @Override
     public void renderContent(int page, int totalPage) {
         mAdapter = new MyAdapter(getSupportFragmentManager(), totalPage);
-        viewpager.setAdapter(mAdapter);
-        viewpager.setCurrentItem(page - 1);
+        viewPager.setAdapter(mAdapter);
+        viewPager.setCurrentItem(page - 1);
         onUpdatePage(page, totalPage);
     }
 
@@ -199,7 +199,7 @@ public class ContentActivity extends BaseSwipeBackActivity
 
     @Override
     public void setCurrentItem(int index) {
-        viewpager.setCurrentItem(index);
+        viewPager.setCurrentItem(index);
     }
 
     @Override
@@ -212,7 +212,7 @@ public class ContentActivity extends BaseSwipeBackActivity
     public void onError(String error) {
         tvError.setText(error);
         rlProgress.setVisibility(View.GONE);
-        viewpager.setVisibility(View.GONE);
+        viewPager.setVisibility(View.GONE);
         rlError.setVisibility(View.VISIBLE);
     }
 

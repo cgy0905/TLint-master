@@ -6,6 +6,7 @@ import com.cgy.hupu.Constants;
 import com.cgy.hupu.bean.ThreadListResult;
 import com.cgy.hupu.data.ThreadRepository;
 import com.cgy.hupu.db.Thread;
+import com.cgy.hupu.injector.PerActivity;
 import com.cgy.hupu.utils.ToastUtil;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import rx.subjects.PublishSubject;
 /**
  * Created by cgy on 2018/12/31 下午 4:13.
  */
+@PerActivity
 public class ThreadRecommendPresenter implements RecommendThreadListContract.Presenter{
 
     private ThreadRepository mThreadRepository;

@@ -38,7 +38,7 @@ public class MessageActivity extends BaseSwipeBackActivity implements HasCompone
     Toolbar toolbar;
     @BindView(R.id.tab_layout)
     TabLayout tabLayout;
-    @BindView(R.id.viewpager)
+    @BindView(R.id.viewPager)
     ViewPager viewpager;
 
     private MessageComponent mMessageComponent;

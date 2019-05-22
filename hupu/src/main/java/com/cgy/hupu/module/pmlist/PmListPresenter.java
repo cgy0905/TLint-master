@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.cgy.hupu.bean.Pm;
 import com.cgy.hupu.bean.PmData;
 import com.cgy.hupu.bean.PmResult;
+import com.cgy.hupu.injector.PerActivity;
 import com.cgy.hupu.net.game.GameApi;
 import com.cgy.hupu.utils.ToastUtil;
 
@@ -23,6 +24,7 @@ import rx.schedulers.Schedulers;
  * @desctiption
  * @date 2019/5/21 17:07
  */
+@PerActivity
 public class PmListPresenter implements PmListContract.Presenter {
 
     private GameApi mGameApi;

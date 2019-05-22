@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSON;
 import com.cgy.hupu.Constants;
 import com.cgy.hupu.bean.UpdateInfo;
 import com.cgy.hupu.components.okhttp.OkHttpHelper;
+import com.cgy.hupu.injector.PerActivity;
 import com.cgy.hupu.utils.ChannelUtil;
 import com.cgy.hupu.utils.SettingPrefUtil;
 import com.umeng.analytics.MobclickAgent;
@@ -22,6 +23,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by cgy on 2018/10/17  10:28
  */
+@PerActivity
 public class SplashPresenter implements SplashContract.Presenter {
 
     private SplashContract.View splashView;
